@@ -58,18 +58,19 @@ PRICE_METHODS = {
 }
 
 USAGE_COL_MAP = {
-    "transaction_date" : "Created",
-    "item_name"        : "Item",
-    "item_type"        : "Type",
-    "quantity_used"    : "Amount",
-    "unit_price"       : "Price",
+   "created"       : "Created",
+    "inventoryitem" : "Item",
+    "inventorytype" : "Type",
+    "amount"        : "Amount",
+    "price"         : "Price",
 }
 
 STOCK_COL_MAP = {
-    "item_name"    : "Item",
-    "item_type"    : "Type_S2",
-    "branch_stock" : "Branch",
-    "master_stock" : "Master",
+    "name"         : "Item",
+    "type"         : "Type_S2",
+    "branchamount" : "Branch",
+    "masteramount" : "Master",
+}
 }
 
 MIN_WINDOW_MONTHS = 1 / 30
