@@ -58,7 +58,7 @@ PRICE_METHODS = {
 }
 
 USAGE_COL_MAP = {
-   "created"       : "Created",
+    "created"       : "Created",
     "inventoryitem" : "Item",
     "inventorytype" : "Type",
     "amount"        : "Amount",
@@ -70,7 +70,6 @@ STOCK_COL_MAP = {
     "type"         : "Type_S2",
     "branchamount" : "Branch",
     "masteramount" : "Master",
-}
 }
 
 MIN_WINDOW_MONTHS = 1 / 30
@@ -108,7 +107,7 @@ def map_columns(df, col_map, source_name):
 # =============================================================
 @st.cache_resource
 def generate_usage_template():
-    df     = pd.DataFrame(columns=list(USAGE_COL_MAP.keys()))
+    df     = pd.DataFrame(columns=["Created", "inventoryItem", "inventoryType", "Amount", "Price"])
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Usage Transactions')
@@ -120,7 +119,7 @@ def generate_usage_template():
 
 @st.cache_resource
 def generate_stock_template():
-    df     = pd.DataFrame(columns=list(STOCK_COL_MAP.keys()))
+    df     = pd.DataFrame(columns=["Name", "Type", "branchAmount", "masterAmount"])
     output = io.BytesIO()
     with pd.ExcelWriter(output, engine='openpyxl') as writer:
         df.to_excel(writer, index=False, sheet_name='Inventory')
@@ -389,7 +388,7 @@ with tab_upload:
         usage_pasted = st.text_area(
             "Paste Usage Data here",
             height      = 200,
-            placeholder = "transaction_date\titem_name\titem_type\tquantity_used\tunit_price",
+            placeholder = "Created\tinventoryItem\tinventoryType\tAmount\tPrice",
             key         = "paste_usage"
         )
         if usage_pasted:
@@ -424,7 +423,7 @@ with tab_upload:
         stock_pasted = st.text_area(
             "Paste Inventory Data here",
             height      = 200,
-            placeholder = "item_name\titem_type\tbranch_stock\tmaster_stock",
+            placeholder = "Name\tType\tbranchAmount\tmasterAmount",
             key         = "paste_stock"
         )
         if stock_pasted:
@@ -542,30 +541,27 @@ with tab_upload:
         - **Inventory** — your current stock levels per item (branch stock and master stock)
 
         **Three AMU methods to choose from:**
-        - 📌 **First Transaction Date** — divides total usage by months since the item first appeared. Best if your data goes back to when the clinic opened.
-        - 🔁 **Rolling Window** — only looks at the last N months. Best if your consumption patterns change over time.
-        - 📅 **Custom Date Range** — you pick the exact window. Best for seasonal analysis or specific reporting periods.
+        - 📌 **First Transaction Date** — divides total usage by months since the item first appeared.
+        - 🔁 **Rolling Window** — only looks at the last N months.
+        - 📅 **Custom Date Range** — you pick the exact window.
 
         ---
         ### 🇸🇦 ماذا تفعل هنا
         هذه هي **نقطة البداية**. قم برفع ملفات البيانات أو لصق البيانات مباشرة من Excel،
         ثم اختر طريقة حساب متوسط الاستخدام الشهري قبل الضغط على **Process & Sync**.
-        لن يعمل أي قسم آخر في التطبيق حتى تكتمل هذه الخطوة.
 
         **ملفان مطلوبان:**
-        - **سجلات الاستخدام** — كل مرة تم فيها سحب مادة من المخزون (التاريخ، الصنف، الكمية، السعر)
-        - **المخزون** — مستويات المخزون الحالية لكل صنف (مخزون الفرع والمخزون الرئيسي)
+        - **سجلات الاستخدام** — كل مرة تم فيها سحب مادة من المخزون
+        - **المخزون** — مستويات المخزون الحالية لكل صنف
 
         ---
         ### 📋 Example / مثال — Disposable Gloves (Medium)
 
-        | transaction_date | item_name | item_type | quantity_used | unit_price |
+        | Created | inventoryItem | inventoryType | Amount | Price |
         |---|---|---|---|---|
         | 2024-01-10 | Gloves Medium | Disposable | 50 | 0.30 |
         | 2024-02-08 | Gloves Medium | Disposable | 45 | 0.30 |
         | 2024-03-05 | Gloves Medium | Disposable | 60 | 0.32 |
-
-        > 💡 Copy this structure from Excel and paste it directly into the **Paste Data** tab — no file saving needed.
         """)
 
 
@@ -607,44 +603,36 @@ with tab_app1:
     with st.expander("📖 What you see here / ما الذي تراه هنا"):
         st.markdown("""
         ### 🇬🇧 What this tab shows
-        This tab breaks the AMU calculation into three transparent steps so you can verify the numbers at each stage.
+        This tab breaks the AMU calculation into three transparent steps.
 
-        - **1.a Raw Data** — your uploaded transactions exactly as the system read them. Check here if something looks wrong.
-        - **1.b Consolidation** — all transactions grouped by item. You can see total quantity used, the date range, and how many months the calculation covers.
-        - **1.c Final AMU** — the burn rate per item per month. This number drives everything else in the app.
+        - **1.a Raw Data** — your uploaded transactions exactly as the system read them.
+        - **1.b Consolidation** — all transactions grouped by item.
+        - **1.c Final AMU** — the burn rate per item per month.
 
         **AMU formula:**
         > AMU = Total Quantity Used ÷ Number of Months in Window
 
         ---
         ### 🇸🇦 ما الذي يعرضه هذا القسم
-        يقسم هذا القسم حساب متوسط الاستخدام الشهري إلى ثلاث خطوات واضحة حتى تتمكن من التحقق من الأرقام في كل مرحلة.
-
-        - **1.a البيانات الخام** — معاملاتك كما قرأها النظام تماماً.
+        - **1.a البيانات الخام** — معاملاتك كما قرأها النظام.
         - **1.b التوحيد** — جميع المعاملات مجمعة حسب الصنف.
         - **1.c متوسط الاستخدام الشهري النهائي** — معدل الاستهلاك لكل صنف شهرياً.
 
         ---
         ### 📋 Example / مثال — Disposable Gloves (Medium)
 
-        After uploading 3 months of transactions, the consolidation step would show:
-
         | Item | Type | Total Amount | No. of Months | AMU |
         |---|---|---|---|---|
         | Gloves Medium | Disposable | 155 | 3.0 | **51.67** |
-
-        > 💡 This means the clinic uses roughly **52 boxes of medium gloves per month**.
-        > If this number looks too high or too low, go back to Tab 1 and try a different AMU method or date window.
 
         ---
         ### 🔄 Common scenarios / سيناريوهات شائعة
 
         | Scenario | What you'll see | What to do |
         |---|---|---|
-        | New item added mid-year | Very high AMU because window is short | Switch to Rolling Window in Tab 1 |
-        | Item not appearing | Missing from raw data | Check item name spelling in your Excel file |
-        | AMU seems too low | Old first transaction date inflating the window | Switch to Rolling Window (last 6 months) |
-        | Price column shows 0 | Price column name not matched | Rename column to include the word `price` |
+        | New item added mid-year | Very high AMU | Switch to Rolling Window in Tab 1 |
+        | Item not appearing | Missing from raw data | Check item name in your file |
+        | AMU seems too low | Window too wide | Switch to Rolling Window (last 6 months) |
         """)
 
 
@@ -700,19 +688,16 @@ with tab_app2:
     with st.expander("📖 What you see here / ما الذي تراه هنا"):
         st.markdown("""
         ### 🇬🇧 What this tab shows
-        This tab matches your **usage data** against your **current stock** and predicts
-        when each item will run out.
+        This tab matches your **usage data** against your **current stock** and predicts when each item will run out.
 
-        - **2.a Match Check** — shows only items successfully matched between your two files. If an item is missing here, its name doesn't match between files — go to Tab 5 to fix it.
-        - **2.b Depletion Forecast** — the predicted month each item hits zero, calculated as:
+        - **2.a Match Check** — items successfully matched between your two files.
+        - **2.b Depletion Forecast** — predicted month each item hits zero.
 
         > Months Remaining = Master Stock ÷ AMU → rounded up to nearest month
 
         ---
         ### 🇸🇦 ما الذي يعرضه هذا القسم
-        يطابق هذا القسم **بيانات الاستخدام** مع **المخزون الحالي** ويتنبأ بموعد نفاد كل صنف.
-
-        - **2.a فحص المطابقة** — يعرض الأصناف التي تمت مطابقتها بنجاح بين الملفين.
+        - **2.a فحص المطابقة** — الأصناف التي تمت مطابقتها بنجاح.
         - **2.b توقع النفاد** — الشهر المتوقع لنفاد كل صنف.
 
         ---
@@ -720,10 +705,7 @@ with tab_app2:
 
         | Item | Master Stock | AMU | Months Remaining | Target Depletion |
         |---|---|---|---|---|
-        | Gloves Medium | 200 boxes | 51.67 | ceil(200 ÷ 51.67) = **4 months** | July 2025 |
-
-        > 💡 This means if you don't restock, gloves will run out in **July 2025**.
-        > The shopping list in Tab 4 will automatically include this item in the correct month.
+        | Gloves Medium | 200 | 51.67 | 4 months | July 2025 |
 
         ---
         ### 🔄 Common scenarios / سيناريوهات شائعة
@@ -731,9 +713,8 @@ with tab_app2:
         | Scenario | What you'll see | What to do |
         |---|---|---|
         | Item missing from forecast | Not in Match Check | Fix name mismatch in Tab 5 |
-        | Depletion date in the past | Stock already depleted or AMU too high | Verify master stock count |
-        | Depletion date very far out (5+ years) | AMU very low or stock very high | Check if item is still in active use |
-        | All items show same depletion date | Possible data issue | Re-process in Tab 1 |
+        | Depletion date in the past | Stock already depleted | Verify master stock count |
+        | Depletion date very far out | AMU very low | Check if item is still in active use |
         """)
 
 
@@ -848,49 +829,34 @@ with tab_shop:
         st.markdown("""
         ### 🇬🇧 What this tab shows
         Your **actionable purchase plan** for the next 3 months starting from your selected month.
-        Each month shows only items predicted to run out in that specific month.
 
-        - **Qty_AMU** — how many units to order. Set to 1 for slow-moving items (AMU < 1), otherwise rounded up to the nearest whole number.
-        - **Price columns** — all three price variants (Last, Average, Highest) shown side by side so you can compare.
-        - **Variance column** — the gap between highest and average price. A large variance means that item's price is unstable.
-        - **Active price** — the one used for cost estimate metrics, based on your chosen Price Method.
+        - **Qty_AMU** — units to order. 1 for slow-moving items, rounded up otherwise.
+        - **Variance column** — gap between highest and average price. High variance = unstable pricing.
+        - **Active price** — used for cost estimate metrics based on your chosen Price Method.
 
         **Price method guide:**
-        - 💰 Last Recorded — use for day-to-day orders
-        - 📈 Highest — use when presenting budgets to management
-        - 📊 Average — use for annual planning
+        - 💰 Last Recorded — day-to-day orders
+        - 📈 Highest — management budget sign-off
+        - 📊 Average — annual planning
 
         ---
         ### 🇸🇦 ما الذي يعرضه هذا القسم
-        **خطة الشراء القابلة للتنفيذ** للأشهر الثلاثة القادمة ابتداءً من الشهر الذي تختاره.
-        يعرض كل شهر فقط الأصناف المتوقع نفادها في ذلك الشهر تحديداً.
-
-        - **Qty_AMU** — عدد الوحدات المقترح طلبها.
-        - **عمود التباين** — الفجوة بين أعلى سعر ومتوسط السعر. التباين الكبير يعني أن سعر هذا الصنف غير مستقر.
+        **خطة الشراء** للأشهر الثلاثة القادمة. يعرض كل شهر فقط الأصناف المتوقع نفادها.
 
         ---
         ### 📋 Example / مثال — Disposable Gloves (Medium)
 
-        Predicted to deplete in **July 2025**. When you select June 2025 as start month, the July block shows:
-
-        | Item | Last Price | Avg Price | High Price | Variance | Active (Avg) | AMU | Qty_AMU |
-        |---|---|---|---|---|---|---|---|
-        | Gloves Medium | $0.32 | $0.307 | $0.32 | $0.013 | $0.307 | 51.67 | **52** |
-
-        **Cost metrics:**
-        - Min Cost (1 unit): $0.307
-        - Predicted Cost (AMU): 52 × $0.307 = **$15.96**
-
-        > 💡 Low variance ($0.013) on gloves means the price is stable — safe to use Average price for budgeting.
+        | Item | Avg Price | High Price | Variance | AMU | Qty_AMU |
+        |---|---|---|---|---|---|
+        | Gloves Medium | $0.307 | $0.32 | $0.013 | 51.67 | **52** |
 
         ---
         ### 🔄 Common scenarios / سيناريوهات شائعة
 
         | Scenario | What you'll see | What to do |
         |---|---|---|
-        | Item not in any month | Depletion date outside 3-month window | Move start month earlier or check Tab 3 |
-        | Qty_AMU shows 1 for a fast-moving item | AMU calculated as < 1 | Check date window in Tab 1 — likely too wide |
-        | High price variance on an item | Large gap between High and Avg price | Use Highest price method for that order |
+        | Item not in any month | Outside 3-month window | Move start month earlier |
+        | Qty_AMU shows 1 for fast-moving item | AMU < 1 | Check date window in Tab 1 |
         | Cost estimate seems too high | AMU inflated | Recheck AMU method in Tab 1 |
         """)
 
@@ -935,49 +901,35 @@ with tab_adjust:
     with st.expander("📖 What you see here / ما الذي تراه هنا"):
         st.markdown("""
         ### 🇬🇧 What this tab shows
-        The **troubleshooter**. If an item appears in your Inventory file but is missing
-        from the Forecast in Tab 3, it will appear here with a suggested name match
-        from your Usage data.
-
-        This happens because the item name in your Inventory file is slightly different
-        from the name in your Usage file — even a single extra space or different
-        capitalisation will cause a mismatch.
+        The **troubleshooter**. If an item appears in your Inventory but is missing from the Forecast,
+        it will appear here with a suggested name match from your Usage data.
 
         **How to fix:**
         1. Look at the **Suggested Match** column
-        2. Go to your Excel files and make the names identical in both files
+        2. Make the names identical in both files
         3. Re-upload and re-process in Tab 1
 
         ---
         ### 🇸🇦 ما الذي يعرضه هذا القسم
-        **قسم استكشاف الأخطاء**. إذا ظهر صنف في ملف المخزون ولكنه مفقود من التوقعات في القسم الثالث،
-        فسيظهر هنا مع اقتراح لاسم مطابق من بيانات الاستخدام.
-
-        **طريقة الإصلاح:**
-        1. انظر إلى عمود **الاقتراح المطابق**
-        2. اجعل الأسماء متطابقة في كلا ملفي Excel
-        3. أعد الرفع والمعالجة في القسم الأول
+        **قسم استكشاف الأخطاء**. إذا ظهر صنف في المخزون ولكنه مفقود من التوقعات،
+        فسيظهر هنا مع اقتراح لاسم مطابق.
 
         ---
-        ### 📋 Example / مثال — Disposable Gloves (Medium)
+        ### 📋 Example / مثال
 
-        | Item (Inventory file) | Suggested Match (Usage file) | Type | Branch Stock |
+        | Item (Inventory) | Suggested Match (Usage) | Type | Branch Stock |
         |---|---|---|---|
         | Gloves-Medium | Gloves Medium | Disposable | 50 |
         | Mask Type II | Mask Type 2 | Disposable | 100 |
-
-        > 💡 **Gloves-Medium** vs **Gloves Medium** — the only difference is a hyphen vs a space.
-        > The system caught it automatically. Fix the name in either file and re-process.
 
         ---
         ### 🔄 Common scenarios / سيناريوهات شائعة
 
         | Scenario | What you'll see | What to do |
         |---|---|---|
-        | Many mismatches after first upload | Most items unmatched | Check if you used the correct template column names |
-        | Suggested match says "No Close Match Found" | Name is very different between files | Manually find and fix the name in your Excel file |
-        | Item keeps reappearing after fix | Fix was in the wrong file | Make sure both files use the exact same name |
-        | Tab shows "All items aligned" but item still missing from forecast | Item exists in usage but not inventory | Add the item to your inventory file |
+        | Many mismatches after first upload | Most items unmatched | Check column names match your file |
+        | "No Close Match Found" | Name very different between files | Fix manually in your Excel file |
+        | Item keeps reappearing after fix | Fixed the wrong file | Make both files use exact same name |
         """)
 
 
@@ -1127,27 +1079,20 @@ with tab_anomaly:
     with st.expander("📖 What you see here / ما الذي تراه هنا"):
         st.markdown("""
         ### 🇬🇧 What this tab shows
-        Compares **what was actually consumed** in your chosen lookback window against
-        **what was expected** based on AMU. Items that deviate significantly are flagged.
+        Compares **actual consumption** against **expected usage** based on AMU.
 
         **Flag meanings:**
-        - 🔴 **Investigate** — consumed 2.5× more than your threshold above expected. Check for leakage, theft, or data entry errors.
-        - 🟡 **Watch** — consumed more than expected but not extreme. Monitor over the next window.
-        - 🔵 **Underuse** — consumed significantly less than expected. Could mean hoarding, items nearing expiry, or missing transaction records.
-        - 🟢 **Normal** — consumption within expected range.
-        - ⚠️ **New Item** — no historical AMU baseline exists yet. Any consumption will flag here until enough history builds up.
+        - 🔴 **Investigate** — 2.5× over threshold. Check for leakage or theft.
+        - 🟡 **Watch** — Over threshold but not extreme. Monitor next window.
+        - 🔵 **Underuse** — Significantly below expected. Possible hoarding or missing records.
+        - 🟢 **Normal** — Within expected range.
+        - ⚠️ **New Item** — No AMU baseline yet.
 
         **Recommended starting settings:**
-        - Lookback window: **3 months**
-        - Overuse threshold: **20%**
-        - Underuse threshold: **30%**
-
-        If you get too many false flags, increase the thresholds or widen the window.
+        Lookback: **3 months** | Overuse: **20%** | Underuse: **30%**
 
         ---
         ### 🇸🇦 ما الذي يعرضه هذا القسم
-        يقارن **ما تم استهلاكه فعلياً** في الفترة الزمنية المحددة مع **ما كان متوقعاً** بناءً على متوسط الاستخدام الشهري.
-
         **معاني العلامات:**
         - 🔴 **يحتاج تحقيق** — الاستهلاك أعلى بـ 2.5 مرة من الحد المسموح به.
         - 🟡 **مراقبة** — الاستهلاك أعلى من المتوقع لكن ليس مفرطاً.
@@ -1157,27 +1102,22 @@ with tab_anomaly:
         ---
         ### 📋 Example / مثال — Disposable Gloves (Medium)
 
-        Settings: 3-month lookback, 20% overuse threshold, 30% underuse threshold.
         AMU = 51.67 → Expected over 3 months = **155 units**
 
-        | Scenario | Actual Used | Variance | Variance % | Flag |
-        |---|---|---|---|---|
-        | Normal month | 158 units | +3 | +1.9% | 🟢 Normal |
-        | Busy period | 185 units | +30 | +19.4% | 🟢 Normal (just under threshold) |
-        | Suspected overuse | 195 units | +40 | +25.8% | 🟡 Watch |
-        | Possible theft or leakage | 260 units | +105 | +67.7% | 🔴 Investigate |
-        | Low usage month (holiday) | 100 units | -55 | -35.5% | 🔵 Under |
-
-        > 💡 A single 🔴 flag on gloves could mean a box was unrecorded, damaged, or taken.
-        > Cross-check against your supplier invoices for the same period to confirm.
+        | Scenario | Actual Used | Variance % | Flag |
+        |---|---|---|---|
+        | Normal month | 158 | +1.9% | 🟢 Normal |
+        | Suspected overuse | 195 | +25.8% | 🟡 Watch |
+        | Possible theft | 260 | +67.7% | 🔴 Investigate |
+        | Holiday month | 100 | -35.5% | 🔵 Under |
 
         ---
         ### 🔄 Common scenarios / سيناريوهات شائعة
 
         | Scenario | What you'll see | What to do |
         |---|---|---|
-        | Everything is 🔴 on first run | Thresholds too low | Increase overuse threshold to 40–50% and re-evaluate |
-        | New item shows ⚠️ New Item | No AMU history yet | Normal — will resolve after a few months of data |
-        | Gloves flagged every month | Consistent unrecorded usage | Audit transaction logging process |
-        | Underuse on a critical item | Possible expiry or hoarding | Do a physical spot check on that item only |
+        | Everything is 🔴 on first run | Thresholds too low | Increase to 40–50% and re-evaluate |
+        | New item shows ⚠️ New Item | No AMU history yet | Normal — resolves after a few months |
+        | Item flagged every month | Consistent unrecorded usage | Audit transaction logging |
+        | Underuse on critical item | Possible expiry or hoarding | Do a physical spot check |
         """)
