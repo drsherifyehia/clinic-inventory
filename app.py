@@ -58,10 +58,9 @@ PRICE_METHODS = {
 }
 
 USAGE_COL_MAP = {
-    "created"       : "Created",
+   "created"       : "Created",
     "inventoryitem" : "Item",
     "inventorytype" : "Type",
-    "amount"        : "Amount",
     "price"         : "Price",
 }
 
@@ -179,10 +178,12 @@ def get_stock_data(uploaded_file):
 # AMU CALCULATION
 # =============================================================
 def calculate_amu(df_raw, method, rolling_months=None, date_from=None, date_to=None):
-    df_raw.columns = df_raw.columns.str.strip()
     df = map_columns(df_raw, USAGE_COL_MAP, "Usage transactions file")
-    if df is None:
-        return pd.DataFrame(), pd.DataFrame()
+if df is None:
+    return pd.DataFrame(), pd.DataFrame()
+    # Amount column already exists in source file with correct name
+# add it directly to avoid duplicate column collision
+df['Amount'] = pd.to_numeric(df_raw['Amount'], errors='coerce').fillna(0)
 
     df            = df.copy()
     df['Created'] = pd.to_datetime(df['Created'], errors='coerce')
