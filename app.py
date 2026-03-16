@@ -1180,15 +1180,3 @@ with tab_anomaly:
         | Gloves flagged every month | Consistent unrecorded usage | Audit transaction logging process |
         | Underuse on a critical item | Possible expiry or hoarding | Do a physical spot check on that item only |
         """)
-```
-
----
-
-And your `requirements.txt`:
-
-```
-streamlit>=1.27.0
-pandas>=2.0.0
-numpy>=1.24.0
-openpyxl>=3.1.0
-```
