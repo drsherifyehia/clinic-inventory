@@ -58,7 +58,7 @@ PRICE_METHODS = {
 }
 
 USAGE_COL_MAP = {
-   "created"       : "Created",
+    "created"       : "Created",
     "inventoryitem" : "Item",
     "inventorytype" : "Type",
     "price"         : "Price",
@@ -178,14 +178,22 @@ def get_stock_data(uploaded_file):
 # AMU CALCULATION
 # =============================================================
 def calculate_amu(df_raw, method, rolling_months=None, date_from=None, date_to=None):
-    df = map_columns(df_raw, USAGE_COL_MAP, "Usage transactions file")
-if df is None:
-    return pd.DataFrame(), pd.DataFrame()
-    # Amount column already exists in source file with correct name
-# add it directly to avoid duplicate column collision
-df['Amount'] = pd.to_numeric(df_raw['Amount'], errors='coerce').fillna(0)
+    df_raw.columns = df_raw.columns.str.strip()
 
-    df            = df.copy()
+    # Extract Amount directly before mapping to avoid duplicate column collision
+    # (source file already has a column named 'Amount' AND 'Type')
+    raw_amount = pd.to_numeric(df_raw['Amount'], errors='coerce').fillna(0) if 'Amount' in df_raw.columns else None
+
+    df = map_columns(df_raw, USAGE_COL_MAP, "Usage transactions file")
+    if df is None:
+        return pd.DataFrame(), pd.DataFrame()
+
+    df = df.copy()
+
+    # Inject Amount from raw source to avoid collision
+    if raw_amount is not None:
+        df['Amount'] = raw_amount.values
+
     df['Created'] = pd.to_datetime(df['Created'], errors='coerce')
     df['Amount']  = pd.to_numeric(df['Amount'],   errors='coerce').fillna(0)
     df['Price']   = pd.to_numeric(df['Price'],    errors='coerce').fillna(0)
@@ -241,8 +249,6 @@ df['Amount'] = pd.to_numeric(df_raw['Amount'], errors='coerce').fillna(0)
 
     amu_df = cons[['Item', 'Type', 'Price_Last', 'Price_High', 'Price_Avg', 'AMU']]
     return cons, amu_df
-
-
 # =============================================================
 # VECTORIZED TARGET DATE
 # =============================================================
