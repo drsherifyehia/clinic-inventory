@@ -690,37 +690,51 @@ def run_fuzzy_match(unmatched_items, usage_names_tuple):
 # =============================================================
 # ANOMALY DETECTION
 # =============================================================
-@st.cache_data
 def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_tuple):
+    # Parse usage data
     df            = pd.read_json(io.StringIO(usage_json))
     df['Created'] = pd.to_datetime(df['Created'], errors='coerce')
     df['Amount']  = pd.to_numeric(df['Amount'],   errors='coerce').fillna(0)
     df            = df.dropna(subset=['Created'])
 
+    # Parse AMU data and filter by selected types
     amu = pd.read_json(io.StringIO(amu_json))
-    amu = amu[amu['Type'].isin(list(types_tuple))]
+    if types_tuple:
+        amu = amu[amu['Type'].isin(list(types_tuple))]
 
-    cutoff = pd.Timestamp.now() - pd.DateOffset(months=lookback)
-    window = df[df['Created'] >= cutoff]
-    if window.empty:
+    if amu.empty:
         return pd.DataFrame()
 
-    actual = window.groupby(['Item', 'Type']).agg(Actual_Usage=('Amount', 'sum')).reset_index()
-    ref    = amu[['Item', 'Type', 'AMU']].copy()
+    # Filter usage to lookback window
+    cutoff = pd.Timestamp.now() - pd.DateOffset(months=lookback)
+    window = df[df['Created'] >= cutoff]
+
+    # Always compute actual usage — items with zero usage in window get 0
+    if not window.empty:
+        actual = window.groupby(['Item', 'Type']).agg(
+            Actual_Usage=('Amount', 'sum')
+        ).reset_index()
+    else:
+        actual = pd.DataFrame(columns=['Item', 'Type', 'Actual_Usage'])
+
+    # Build reference from AMU (all items regardless of recent activity)
+    ref = amu[['Item', 'Type', 'AMU']].copy()
     ref['Expected_Usage'] = (ref['AMU'] * lookback).round(2)
 
-    r                  = pd.merge(ref, actual, on=['Item', 'Type'], how='left')
-    r['Actual_Usage']  = r['Actual_Usage'].fillna(0)
-    r['Variance']      = (r['Actual_Usage'] - r['Expected_Usage']).round(2)
-    r['Variance_%_raw']= np.where(
+    # Left join — items with no recent usage get Actual_Usage = 0
+    r                 = pd.merge(ref, actual, on=['Item', 'Type'], how='left')
+    r['Actual_Usage'] = pd.to_numeric(r['Actual_Usage'], errors='coerce').fillna(0)
+    r['Variance']     = (r['Actual_Usage'] - r['Expected_Usage']).round(2)
+
+    r['Variance_%_raw'] = np.where(
         r['Expected_Usage'] > 0,
         ((r['Variance'] / r['Expected_Usage']) * 100).round(1),
         np.where(r['Actual_Usage'] > 0, 999.0, 0.0)
     )
 
-    pct  = r['Variance_%_raw']
+    pct = r['Variance_%_raw']
     r['Flag'] = np.select(
-        [pct >= over_t*2.5, pct >= over_t, pct <= -under_t*2.5, pct <= -under_t],
+        [pct >= over_t * 2.5, pct >= over_t, pct <= -under_t * 2.5, pct <= -under_t],
         ['🔴 Investigate', '🟡 Watch', '🔵 Severely Under', '🔵 Under'],
         default='🟢 Normal'
     )
