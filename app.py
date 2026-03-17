@@ -745,10 +745,10 @@ def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_t
 
 
 # =============================================================
-# AI ASSISTANT — FIXED WITH GROQ + DEEPSEEK R1
+# AI ASSISTANT — GROQ + LLAMA 3.3 70B
 # =============================================================
 def build_data_context():
-    """Builds a smart compressed context for AI analysis."""
+    """Builds a smart compressed context that fits within Groq free tier token limits."""
     parts = []
 
     if st.session_state.shared_amu is not None:
@@ -757,42 +757,41 @@ def build_data_context():
 
         parts.append(f"=== AMU SUMMARY ({len(amu)} total items) ===")
 
-        # Top 20 highest consumption items
         top20 = amu.nlargest(20, 'AMU')[['Item', 'Type', 'AMU', 'Price_Last']].to_string(index=False)
         parts.append(f"Top 20 highest AMU items:\n{top20}")
 
-        # Category breakdown
         cat = amu.groupby('Type').agg(
-            Items=('Item', 'count'),
-            Avg_AMU=('AMU', 'mean'),
-            Total_AMU=('AMU', 'sum')
+            Items    = ('Item', 'count'),
+            Avg_AMU  = ('AMU',  'mean'),
+            Total_AMU= ('AMU',  'sum')
         ).round(2).sort_values('Total_AMU', ascending=False)
         parts.append(f"\nCategory breakdown:\n{cat.to_string()}")
 
-        # Stats
-        parts.append(f"\nOverall stats: Avg AMU={amu['AMU'].mean():.2f}, Max={amu['AMU'].max():.2f}, Min={amu['AMU'].min():.2f}")
+        parts.append(
+            f"\nOverall stats: Avg AMU={amu['AMU'].mean():.2f}, "
+            f"Max={amu['AMU'].max():.2f}, Min={amu['AMU'].min():.2f}"
+        )
 
     if st.session_state.merged_data is not None:
         m = st.session_state.merged_data.copy()
         m['TargetDate'] = pd.to_datetime(m['TargetDate'], errors='coerce')
         m['Master']     = pd.to_numeric(m['Master'], errors='coerce').fillna(0)
+        m['AMU']        = pd.to_numeric(m['AMU'],    errors='coerce').fillna(0)
 
         parts.append(f"\n=== FORECAST SUMMARY ({len(m)} matched items) ===")
 
-        # Soonest 15 depleting
-        soonest = m.nsmallest(15, 'TargetDate')[['Item', 'Type', 'Master', 'AMU', 'TargetDate']].to_string(index=False)
+        soonest = m.nsmallest(15, 'TargetDate')[
+            ['Item', 'Type', 'Master', 'AMU', 'TargetDate']
+        ].to_string(index=False)
         parts.append(f"Items depleting soonest:\n{soonest}")
 
-        # Items already at 0
         zero = m[m['Master'] <= 0][['Item', 'Type', 'AMU']]
         if not zero.empty:
             parts.append(f"\nItems with zero master stock ({len(zero)}):\n{zero.to_string(index=False)}")
 
-        # Low stock (< 1 month supply)
-        m['MonthsLeft'] = np.where(
-            m['AMU'] > 0,
-            (m['Master'] / m['AMU']).round(1),
-            99
+        m['MonthsLeft'] = m.apply(
+            lambda row: round(row['Master'] / row['AMU'], 1) if row['AMU'] > 0 else 99,
+            axis=1
         )
         critical = m[m['MonthsLeft'] < 1][['Item', 'Type', 'Master', 'AMU', 'MonthsLeft']]
         if not critical.empty:
@@ -813,6 +812,56 @@ def build_data_context():
         return "No data loaded yet. Ask the user to upload data first."
 
     return "\n\n".join(parts)
+
+
+def ask_ai(question, history):
+    """Calls Groq API with full data context and deep analysis instructions."""
+    context = build_data_context()
+
+    system = f"""You are an expert inventory analyst for a dental clinic with deep knowledge of supply chain management.
+
+You have access to the clinic's COMPLETE inventory data below.
+Perform detailed analysis when asked — calculate totals, identify patterns,
+flag risks, compare items, and give specific actionable recommendations.
+Always cite specific item names and numbers from the data.
+If asked to rank or compare, show a proper analysis.
+Respond in the same language as the user (English or Arabic).
+
+{context}"""
+
+    messages = [{"role": "system", "content": system}]
+    for h in history:
+        messages.append({"role": "user",      "content": h["user"]})
+        messages.append({"role": "assistant", "content": h["ai"]})
+    messages.append({"role": "user", "content": question})
+
+    try:
+        api_key = st.secrets["groq"]["api_key"]
+
+        import requests
+        resp = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Content-Type"  : "application/json",
+                "Authorization" : f"Bearer {api_key}",
+            },
+            json={
+                "model"      : "llama-3.3-70b-versatile",
+                "messages"   : messages,
+                "max_tokens" : 2000,
+            },
+            timeout=30
+        )
+
+        data = resp.json()
+
+        if resp.status_code != 200:
+            return f"⚠️ Error {resp.status_code}: {data.get('error', {}).get('message', str(data))}"
+
+        return data["choices"][0]["message"]["content"]
+
+    except Exception as e:
+        return f"⚠️ Could not reach AI: {str(e)}"
 
 
 # =============================================================
