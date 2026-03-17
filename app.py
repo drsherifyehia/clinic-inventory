@@ -900,34 +900,39 @@ def build_data_context():
 
     return "\n\n".join(parts)
 
-
 def ask_ai(question, history):
     context = build_data_context()
     
     try:
-        api_key = st.secrets["gemini"]["api_key"]
+        api_key = st.secrets["groq"]["api_key"]
         
         import requests
         
-        # Build conversation for Gemini
-        chat_history = []
-        for h in history:
-            chat_history.append({"role": "user",  "parts": [{"text": h["user"]}]})
-            chat_history.append({"role": "model", "parts": [{"text": h["ai"]}]})
-        chat_history.append({"role": "user", "parts": [{"text": question}]})
-        
-        system = f"""You are an intelligent inventory assistant for a dental clinic.
+        messages = [{"role": "system", "content": f"""You are an intelligent inventory assistant for a dental clinic.
+You have access to the clinic's current inventory data summarized below.
+Answer questions clearly and concisely. Use numbers from the data when relevant.
+
 --- CLINIC DATA ---
 {context}
 --- END DATA ---
-Keep answers brief. Respond in the same language as the user (English or Arabic)."""
 
+Keep answers brief (2-4 sentences). Respond in the same language as the user (English or Arabic)."""}]
+        
+        for h in history:
+            messages.append({"role": "user",      "content": h["user"]})
+            messages.append({"role": "assistant", "content": h["ai"]})
+        messages.append({"role": "user", "content": question})
+        
         resp = requests.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
-            headers={"Content-Type": "application/json"},
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={
+                "Content-Type"  : "application/json",
+                "Authorization" : f"Bearer {api_key}",
+            },
             json={
-                "system_instruction": {"parts": [{"text": system}]},
-                "contents": chat_history,
+                "model"      : "llama-3.3-70b-versatile",
+                "messages"   : messages,
+                "max_tokens" : 1000,
             },
             timeout=30
         )
@@ -937,7 +942,7 @@ Keep answers brief. Respond in the same language as the user (English or Arabic)
         if resp.status_code != 200:
             return f"⚠️ Error {resp.status_code}: {data.get('error', {}).get('message', str(data))}"
         
-        return data["candidates"][0]["content"]["parts"][0]["text"]
+        return data["choices"][0]["message"]["content"]
         
     except Exception as e:
         return f"⚠️ Could not reach AI: {str(e)}"
