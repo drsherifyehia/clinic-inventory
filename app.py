@@ -229,9 +229,7 @@ hr { border-color: var(--border) !important; }
 .badge-amber { background: rgba(246,166,35,0.12); color: var(--accent-amber); border: 1px solid rgba(246,166,35,0.25); }
 .badge-red   { background: rgba(246,62,62,0.12);  color: var(--accent-red);   border: 1px solid rgba(246,62,62,0.25); }
 
-.ai-float {
-    position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
-}
+.ai-float { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; }
 .ai-float a {
     display: flex; align-items: center; justify-content: center;
     width: 56px; height: 56px; border-radius: 50%;
@@ -481,6 +479,7 @@ def render_manual_entry_form(target):
                 st.warning("Item name is required.")
 
         if 'manual_usage' in st.session_state and not st.session_state.manual_usage.empty:
+            st.empty()
             st.dataframe(st.session_state.manual_usage, use_container_width=True)
             if st.button("✅ Use as Usage Data", key="man_use_usage"):
                 st.session_state.usage_mapped = st.session_state.manual_usage.copy()
@@ -507,6 +506,7 @@ def render_manual_entry_form(target):
                 st.warning("Item name is required.")
 
         if 'manual_stock' in st.session_state and not st.session_state.manual_stock.empty:
+            st.empty()
             st.dataframe(st.session_state.manual_stock, use_container_width=True)
             if st.button("✅ Use as Inventory Data", key="man_use_stock"):
                 st.session_state.stock_df     = st.session_state.manual_stock.copy()
@@ -679,7 +679,7 @@ def build_data_context():
     if st.session_state.stock_df is not None:
         parts.append(f"Inventory: {len(st.session_state.stock_df)} items.")
     if not parts:
-        return "No data loaded yet. Ask the user to upload data in the Upload page first."
+        return "No data loaded yet."
     return "\n\n".join(parts)
 
 
@@ -796,38 +796,41 @@ with st.sidebar:
     st.divider()
     st.markdown("**Data Status**")
 
+    # FIX: pre-compute badge strings outside f-string to avoid Python 3.14 quote issues
     usage_ok = st.session_state.usage_mapped is not None
     stock_ok = st.session_state.stock_df is not None
     amu_ok   = st.session_state.shared_amu is not None
+
+    usage_badge_cls  = "badge-green" if usage_ok else "badge-amber"
+    usage_badge_txt  = "✓ Ready"     if usage_ok else "○ Empty"
+    stock_badge_cls  = "badge-green" if stock_ok else "badge-amber"
+    stock_badge_txt  = "✓ Ready"     if stock_ok else "○ Empty"
+    amu_badge_cls    = "badge-green" if amu_ok   else "badge-amber"
+    amu_badge_txt    = "✓ Done"      if amu_ok   else "○ Pending"
 
     st.markdown(f"""
     <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
         <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="color:#6b7c99;font-size:0.8rem;font-family:'DM Sans',sans-serif">Usage Data</span>
-            <span class="badge {'badge-green' if usage_ok else 'badge-amber'}">
-                {'✓ Ready' if usage_ok else '○ Empty'}
-            </span>
+            <span class="badge {usage_badge_cls}">{usage_badge_txt}</span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="color:#6b7c99;font-size:0.8rem;font-family:'DM Sans',sans-serif">Inventory</span>
-            <span class="badge {'badge-green' if stock_ok else 'badge-amber'}">
-                {'✓ Ready' if stock_ok else '○ Empty'}
-            </span>
+            <span class="badge {stock_badge_cls}">{stock_badge_txt}</span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="color:#6b7c99;font-size:0.8rem;font-family:'DM Sans',sans-serif">AMU Calculated</span>
-            <span class="badge {'badge-green' if amu_ok else 'badge-amber'}">
-                {'✓ Done' if amu_ok else '○ Pending'}
-            </span>
+            <span class="badge {amu_badge_cls}">{amu_badge_txt}</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     if amu_ok:
         st.divider()
+        amu_method_label = METHOD_LABELS[st.session_state.amu_method]
         st.markdown(f"""
         <div style="color:#6b7c99;font-size:0.75rem;font-family:'DM Sans',sans-serif">
-            Method: <span style="color:#2e7cf6">{METHOD_LABELS[st.session_state.amu_method]}</span>
+            Method: <span style="color:#2e7cf6">{amu_method_label}</span>
         </div>
         """, unsafe_allow_html=True)
 
@@ -841,7 +844,6 @@ page = st.session_state.current_page
 if page == 'upload':
     page_header("Data Upload", "Connect your clinic data to get started")
 
-    # ── USAGE TRANSACTIONS ──────────────────────────────────
     st.markdown("### 📋 Usage Transactions")
     dl_col, _ = st.columns([2, 3])
     with dl_col:
@@ -858,9 +860,7 @@ if page == 'upload':
         "Usage entry method",
         ["☁️ Upload any sheet", "⚡ Upload Dentolize export",
          "📋 Copy & Paste", "✏️ Manual entry"],
-        horizontal       = True,
-        key              = "usage_entry_mode",
-        label_visibility = "collapsed",
+        horizontal=True, key="usage_entry_mode", label_visibility="collapsed",
     )
 
     usage_source_raw = None
@@ -868,8 +868,7 @@ if page == 'upload':
     if usage_mode == "☁️ Upload any sheet":
         files = st.file_uploader(
             "Upload one or more Excel files",
-            accept_multiple_files=True,
-            key="up_usage_generic"
+            accept_multiple_files=True, key="up_usage_generic"
         )
         if files:
             usage_source_raw = load_excel_files(files)
@@ -878,8 +877,7 @@ if page == 'upload':
         st.info("⚡ Dentolize mode — columns mapped automatically. No configuration needed.")
         files = st.file_uploader(
             "Upload Dentolize transaction export(s)",
-            accept_multiple_files=True,
-            key="up_usage_dentolize"
+            accept_multiple_files=True, key="up_usage_dentolize"
         )
         if files:
             raw = load_excel_files(files)
@@ -890,6 +888,7 @@ if page == 'upload':
                     st.session_state.usage_mapped = mapped
                     st.success(f"✅ Dentolize usage loaded — {len(mapped):,} rows auto-mapped.")
                     with st.expander("Preview"):
+                        st.empty()
                         st.dataframe(mapped.head(5), use_container_width=True)
                 except Exception as e:
                     st.error(f"❌ Auto-map failed: {e}")
@@ -905,6 +904,7 @@ if page == 'upload':
             usage_source_raw = parse_pasted_data(pasted, "Usage Transactions")
             if usage_source_raw is not None:
                 st.success(f"✅ Detected {len(usage_source_raw):,} rows.")
+                st.empty()
                 st.dataframe(usage_source_raw.head(5), use_container_width=True)
 
     elif usage_mode == "✏️ Manual entry":
@@ -918,11 +918,11 @@ if page == 'upload':
             st.session_state.usage_mapped = apply_mapping(usage_source_raw, mapping)
             st.success("✅ Column mapping complete.")
             with st.expander("Preview mapped data"):
+                st.empty()
                 st.dataframe(st.session_state.usage_mapped.head(5), use_container_width=True)
 
     st.divider()
 
-    # ── INVENTORY ───────────────────────────────────────────
     st.markdown("### 🗄️ Inventory")
     dl_col2, _ = st.columns([2, 3])
     with dl_col2:
@@ -939,9 +939,7 @@ if page == 'upload':
         "Inventory entry method",
         ["☁️ Upload any sheet", "⚡ Upload Dentolize export",
          "📋 Copy & Paste", "✏️ Manual entry"],
-        horizontal       = True,
-        key              = "stock_entry_mode",
-        label_visibility = "collapsed",
+        horizontal=True, key="stock_entry_mode", label_visibility="collapsed",
     )
 
     stock_source_raw = None
@@ -973,6 +971,7 @@ if page == 'upload':
                     st.session_state.stock_mapped = mapped
                     st.success(f"✅ Dentolize inventory loaded — {len(mapped):,} items auto-mapped.")
                     with st.expander("Preview"):
+                        st.empty()
                         st.dataframe(mapped.head(5), use_container_width=True)
                 except Exception as e:
                     st.error(f"❌ Auto-map failed: {e}")
@@ -988,6 +987,7 @@ if page == 'upload':
             stock_source_raw = parse_pasted_data(pasted_s, "Inventory")
             if stock_source_raw is not None:
                 st.success(f"✅ Detected {len(stock_source_raw):,} rows.")
+                st.empty()
                 st.dataframe(stock_source_raw.head(5), use_container_width=True)
 
     elif stock_mode == "✏️ Manual entry":
@@ -1002,17 +1002,17 @@ if page == 'upload':
             st.session_state.stock_mapped = mapped
             st.success("✅ Column mapping complete.")
             with st.expander("Preview mapped data"):
+                st.empty()
                 st.dataframe(mapped.head(5), use_container_width=True)
 
     st.divider()
 
-    # ── AMU METHOD ──────────────────────────────────────────
     st.markdown("### 📐 AMU Calculation Method")
     selected_label = st.selectbox(
         "Method",
-        options          = list(METHOD_LABELS.values()),
-        index            = list(METHOD_LABELS.keys()).index(st.session_state.amu_method),
-        label_visibility = "collapsed",
+        options=list(METHOD_LABELS.values()),
+        index=list(METHOD_LABELS.keys()).index(st.session_state.amu_method),
+        label_visibility="collapsed",
     )
     chosen_method = [k for k, v in METHOD_LABELS.items() if v == selected_label][0]
 
@@ -1095,11 +1095,9 @@ elif page == 'amu':
     if usage_empty:
         st.warning("⚠️ Upload usage data first — go to the Upload page.")
     else:
-        st.markdown(f"""
-        <span class="badge badge-blue">
-            {METHOD_LABELS.get(st.session_state.amu_method, '')}
-        </span>
-        """, unsafe_allow_html=True)
+        amu_method_label = METHOD_LABELS.get(st.session_state.amu_method, '')
+        st.markdown(f'<span class="badge badge-blue">{amu_method_label}</span>',
+                    unsafe_allow_html=True)
         st.markdown("")
 
         t_raw, t_cons, t_final = st.tabs(["Raw Data", "Consolidation", "Final AMU"])
@@ -1107,6 +1105,7 @@ elif page == 'amu':
         with t_raw:
             if (st.session_state.usage_raw is not None
                     and not st.session_state.usage_raw.empty):
+                st.empty()
                 st.dataframe(st.session_state.usage_raw, use_container_width=True)
             else:
                 st.info("No raw data available.")
@@ -1114,6 +1113,7 @@ elif page == 'amu':
         with t_cons:
             if (st.session_state.cons_view is not None
                     and not st.session_state.cons_view.empty):
+                st.empty()
                 st.dataframe(st.session_state.cons_view, use_container_width=True)
             else:
                 st.warning("Process data in the Upload page first.")
@@ -1126,13 +1126,14 @@ elif page == 'amu':
                 m1.metric("Total Items", len(amu_df))
                 m2.metric("Avg AMU",     f"{amu_df['AMU'].mean():.2f}")
                 m3.metric("Max AMU",     f"{amu_df['AMU'].max():.2f}")
+                st.empty()
                 st.dataframe(amu_df, use_container_width=True)
                 st.download_button(
                     "⬇️ Download AMU Table",
-                    data      = amu_df.to_csv(index=False),
-                    file_name = "amu_table.csv",
-                    mime      = "text/csv",
-                    key       = "dl_amu",
+                    data=amu_df.to_csv(index=False),
+                    file_name="amu_table.csv",
+                    mime="text/csv",
+                    key="dl_amu",
                 )
             else:
                 st.warning("Process data in the Upload page first.")
@@ -1185,26 +1186,26 @@ elif page == 'forecast':
                   len(merged[merged['TargetDate'] <=
                              (pd.Timestamp.now() + pd.DateOffset(months=3))]))
 
-        t_match, t_forecast = st.tabs(["Match Check", "Depletion Forecast"])
+        st.markdown("#### Match Check")
+        st.empty()
+        st.dataframe(
+            merged[['Item','Type','AMU','Branch','Master']],
+            use_container_width=True
+        )
 
-        with t_match:
-            st.dataframe(
-                merged[['Item','Type','AMU','Branch','Master']],
-                use_container_width=True
-            )
-
-        with t_forecast:
-            st.dataframe(
-                merged[['Item','Master','AMU','TargetDate']],
-                use_container_width=True
-            )
-            st.download_button(
-                "⬇️ Download Forecast",
-                data      = merged[['Item','Master','AMU','TargetDate']].to_csv(index=False),
-                file_name = "depletion_forecast.csv",
-                mime      = "text/csv",
-                key       = "dl_forecast",
-            )
+        st.markdown("#### Depletion Forecast")
+        st.empty()
+        st.dataframe(
+            merged[['Item','Master','AMU','TargetDate']],
+            use_container_width=True
+        )
+        st.download_button(
+            "⬇️ Download Forecast",
+            data      = merged[['Item','Master','AMU','TargetDate']].to_csv(index=False),
+            file_name = "depletion_forecast.csv",
+            mime      = "text/csv",
+            key       = "dl_forecast",
+        )
 
     with st.expander("📖 Guide / دليل"):
         st.markdown("""
@@ -1288,6 +1289,7 @@ elif page == 'shopping':
                     'Price_Variance': '↕️ Variance',
                     'Price_Active'  : '✅ Active',
                 }
+                st.empty()
                 st.dataframe(
                     m_df[['Item','Type','Price_Last','Price_Avg','Price_High',
                            'Price_Variance','Price_Active','AMU','Qty_AMU',
@@ -1353,6 +1355,7 @@ elif page == 'adjust':
             display_cols = ['Item', 'Suggested Match']
             if 'Type_S2' in unmatched.columns: display_cols.append('Type_S2')
             if 'Branch'  in unmatched.columns: display_cols.append('Branch')
+            st.empty()
             st.dataframe(unmatched[display_cols], use_container_width=True)
             st.download_button(
                 "⬇️ Download Mismatch Report",
@@ -1441,6 +1444,7 @@ elif page == 'anomaly':
             ])
 
             with t_all:
+                st.empty()
                 st.dataframe(
                     anomaly_df[dcols].rename(columns=drename),
                     use_container_width=True
@@ -1457,6 +1461,7 @@ elif page == 'anomaly':
                     st.success("None.")
                 else:
                     st.error(f"{len(red)} item(s) — check for leakage or theft.")
+                    st.empty()
                     st.dataframe(red[dcols].rename(columns=drename), use_container_width=True)
                     st.download_button(
                         "⬇️ Download",
@@ -1470,6 +1475,7 @@ elif page == 'anomaly':
                     st.success("None.")
                 else:
                     st.warning(f"{len(yel)} item(s) slightly over — monitor.")
+                    st.empty()
                     st.dataframe(yel[dcols].rename(columns=drename), use_container_width=True)
 
             with t_blu:
@@ -1478,6 +1484,7 @@ elif page == 'anomaly':
                     st.success("None.")
                 else:
                     st.info(f"{len(blu)} item(s) under consumed.")
+                    st.empty()
                     st.dataframe(blu[dcols].rename(columns=drename), use_container_width=True)
 
             with t_grn:
@@ -1486,6 +1493,7 @@ elif page == 'anomaly':
                     st.info("None.")
                 else:
                     st.success(f"{len(grn)} item(s) normal.")
+                    st.empty()
                     st.dataframe(grn[dcols].rename(columns=drename), use_container_width=True)
 
     with st.expander("📖 Guide / دليل"):
