@@ -926,7 +926,11 @@ Always respond in the same language the user writes in (English or Arabic)."""
         import requests
         resp = requests.post(
             "https://api.anthropic.com/v1/messages",
-            headers={"Content-Type": "application/json"},
+            headers={
+                "Content-Type": "application/json",
+                "x-api-key": st.secrets["anthropic"]["api_key"],   # ← ADD THIS
+                "anthropic-version": "2023-06-01",                  # ← ADD THIS
+            },
             json={
                 "model"      : "claude-sonnet-4-20250514",
                 "max_tokens" : 1000,
@@ -939,7 +943,6 @@ Always respond in the same language the user writes in (English or Arabic)."""
         return data["content"][0]["text"]
     except Exception as e:
         return f"⚠️ Could not reach AI: {str(e)}"
-
 
 # =============================================================
 # INITIALIZE SESSION STATE
