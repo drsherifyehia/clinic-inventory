@@ -40,7 +40,6 @@ html, body, [data-testid="stAppViewContainer"],
     font-family: 'DM Sans', sans-serif !important;
 }
 
-/* ── Text Visibility Overrides (Fixes light mode text on dark bg) ── */
 [data-testid="stAppViewContainer"] p:not([style*="color"]),
 [data-testid="stAppViewContainer"] span:not([style*="color"]),
 [data-testid="stAppViewContainer"] li:not([style*="color"]),
@@ -49,7 +48,6 @@ html, body, [data-testid="stAppViewContainer"],
     color: var(--text-primary) !important;
 }
 
-/* ── Sidebar ── */
 [data-testid="stSidebar"] {
     background-color: var(--bg-surface) !important;
     border-right: 1px solid var(--border) !important;
@@ -61,7 +59,6 @@ html, body, [data-testid="stAppViewContainer"],
     padding-top: 1rem;
 }
 
-/* ── Headers ── */
 h1, h2, h3, h4 {
     font-family: 'DM Sans', sans-serif !important;
     font-weight: 600 !important;
@@ -69,7 +66,6 @@ h1, h2, h3, h4 {
     letter-spacing: -0.02em;
 }
 
-/* ── Buttons ── */
 .stButton > button {
     background: linear-gradient(135deg, var(--accent-blue), #1a56d6) !important;
     color: #fff !important;
@@ -87,7 +83,6 @@ h1, h2, h3, h4 {
     box-shadow: 0 4px 20px rgba(46,124,246,0.4) !important;
 }
 
-/* ── Inputs, selects, text areas ── */
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea,
 .stSelectbox > div > div > div,
@@ -104,7 +99,6 @@ h1, h2, h3, h4 {
     box-shadow: 0 0 0 2px rgba(46,124,246,0.15) !important;
 }
 
-/* ── File uploader ── */
 [data-testid="stFileUploader"] {
     background-color: var(--bg-card) !important;
     border: 1px dashed var(--border) !important;
@@ -115,7 +109,6 @@ h1, h2, h3, h4 {
     border-color: var(--accent-blue) !important;
 }
 
-/* ── Metrics ── */
 [data-testid="stMetric"] {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -134,16 +127,12 @@ h1, h2, h3, h4 {
     font-size: 1.6rem !important;
 }
 
-/* ── Dataframe ── */
 [data-testid="stDataFrameContainer"] {
     border-radius: var(--radius-lg) !important;
     border: 1px solid var(--border) !important;
     overflow: hidden !important;
 }
-/* Note: Removed forced .dvn-scroller background override. Dataframes use HTML5 canvas 
-   which ignores CSS text color. Forcing it dark causes invisible black text. */
 
-/* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
     background-color: var(--bg-surface) !important;
     border-radius: var(--radius) !important;
@@ -167,7 +156,6 @@ h1, h2, h3, h4 {
     color: var(--text-primary) !important;
 }
 
-/* ── Expander ── */
 .streamlit-expanderHeader {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -181,7 +169,6 @@ h1, h2, h3, h4 {
     border-top: none !important;
 }
 
-/* ── Alerts ── */
 .stAlert {
     border-radius: var(--radius) !important;
     border: none !important;
@@ -192,7 +179,6 @@ h1, h2, h3, h4 {
 [data-testid="stErrorBox"]   { background-color: rgba(246,62,62,0.08) !important;  border-left: 3px solid var(--accent-red) !important; }
 [data-testid="stSuccessBox"] { background-color: rgba(34,197,94,0.08) !important;  border-left: 3px solid var(--accent-green) !important; }
 
-/* ── Selectbox dropdown ── */
 [data-baseweb="popover"], [data-baseweb="menu"] {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -206,15 +192,12 @@ h1, h2, h3, h4 {
     background-color: var(--bg-input) !important;
 }
 
-/* ── Divider ── */
 hr { border-color: var(--border) !important; }
 
-/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
-/* ── Download button ── */
 .stDownloadButton > button {
     background: var(--bg-card) !important;
     color: var(--accent-blue) !important;
@@ -229,7 +212,6 @@ hr { border-color: var(--border) !important; }
     box-shadow: 0 0 0 2px rgba(46,124,246,0.15) !important;
 }
 
-/* ── Radio buttons ── */
 .stRadio > div {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -241,7 +223,6 @@ hr { border-color: var(--border) !important; }
     font-family: 'DM Sans', sans-serif !important;
 }
 
-/* ── Multiselect ── */
 [data-baseweb="tag"] {
     background-color: rgba(46,124,246,0.15) !important;
     border: 1px solid rgba(46,124,246,0.3) !important;
@@ -251,96 +232,10 @@ hr { border-color: var(--border) !important; }
     color: var(--accent-blue) !important;
 }
 
-/* ── Slider ── */
 [data-testid="stSlider"] > div > div > div {
     background-color: var(--accent-blue) !important;
 }
 
-/* ── AI Chat Bubble ── */
-.ai-bubble {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    z-index: 9999;
-}
-.ai-bubble-btn {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-blue), var(--accent-teal));
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 24px rgba(46,124,246,0.4);
-    font-size: 1.4rem;
-    transition: transform 0.2s ease;
-}
-.ai-bubble-btn:hover { transform: scale(1.08); }
-
-.ai-chat-panel {
-    position: fixed;
-    bottom: 5.5rem;
-    right: 2rem;
-    width: 360px;
-    max-height: 520px;
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 9998;
-}
-.ai-chat-header {
-    padding: 1rem 1.2rem;
-    background: linear-gradient(135deg, rgba(46,124,246,0.15), rgba(14,207,176,0.08));
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-.ai-chat-header span {
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-}
-.ai-chat-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-.msg-user {
-    align-self: flex-end;
-    background: rgba(46,124,246,0.15);
-    border: 1px solid rgba(46,124,246,0.2);
-    border-radius: 12px 12px 2px 12px;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.85rem;
-    color: var(--text-primary);
-    max-width: 85%;
-    font-family: 'DM Sans', sans-serif;
-}
-.msg-ai {
-    align-self: flex-start;
-    background: var(--bg-input);
-    border: 1px solid var(--border);
-    border-radius: 12px 12px 12px 2px;
-    padding: 0.6rem 0.9rem;
-    font-size: 0.85rem;
-    color: var(--text-primary);
-    max-width: 85%;
-    font-family: 'DM Sans', sans-serif;
-    line-height: 1.5;
-}
-
-/* ── Card component ── */
 .clinic-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
@@ -349,7 +244,6 @@ hr { border-color: var(--border) !important; }
     margin-bottom: 1rem;
 }
 
-/* ── Page header ── */
 .page-header {
     padding: 1.5rem 0 1rem 0;
     border-bottom: 1px solid var(--border);
@@ -368,39 +262,6 @@ hr { border-color: var(--border) !important; }
     font-size: 0.85rem;
 }
 
-/* ── Entry mode card ── */
-.entry-mode-card {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.2rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-}
-.entry-mode-card:hover {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 1px rgba(46,124,246,0.2);
-}
-.entry-mode-card.active {
-    border-color: var(--accent-blue);
-    background: rgba(46,124,246,0.06);
-}
-.entry-mode-icon { font-size: 1.8rem; margin-bottom: 0.4rem; }
-.entry-mode-title {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
-}
-.entry-mode-desc {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 0.2rem;
-    font-family: 'DM Sans', sans-serif;
-}
-
-/* ── Sidebar logo ── */
 .sidebar-logo {
     padding: 1.2rem 1rem 0.5rem 1rem;
     border-bottom: 1px solid var(--border);
@@ -420,7 +281,6 @@ hr { border-color: var(--border) !important; }
     margin: 0.15rem 0 0 0;
 }
 
-/* ── Status badge ── */
 .badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
@@ -522,7 +382,6 @@ STOCK_FIELDS = {
     "Master"  : "🗄️ Master Stock",
 }
 
-# Dentolize fixed column indices (confirmed from file analysis)
 DENTOLIZE_USAGE_IDX  = {"Created": 12, "Item": 8, "Type": 10, "Amount": 2, "Price": 5}
 DENTOLIZE_STOCK_IDX  = {"Item": 1, "Type_S2": 3, "Branch": 5, "Master": 6}
 
@@ -664,7 +523,6 @@ def apply_dentolize_stock(df):
 # MANUAL ENTRY FORM
 # =============================================================
 def render_manual_entry_form(target):
-    """target: 'usage' or 'stock'"""
     if target == 'usage':
         st.markdown("**Add a usage transaction row:**")
         c1, c2, c3, c4, c5 = st.columns(5)
@@ -873,56 +731,58 @@ def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_t
 
 
 # =============================================================
-# AI ASSISTANT
+# AI ASSISTANT — FIXED WITH GROQ + DEEPSEEK R1
 # =============================================================
 def build_data_context():
-    """Builds a concise text summary of current app data to pass as AI context."""
+    """Builds full data context for deep AI analysis."""
     parts = []
+
     if st.session_state.shared_amu is not None:
         amu = st.session_state.shared_amu
-        parts.append(f"AMU Data: {len(amu)} items tracked.")
-        parts.append(f"Categories: {', '.join(amu['Type'].unique().astype(str).tolist())}")
-        top5 = amu.nlargest(5, 'AMU')[['Item', 'AMU']].to_string(index=False)
-        parts.append(f"Top 5 highest AMU items:\n{top5}")
+        parts.append(f"=== AMU TABLE ({len(amu)} items) ===")
+        parts.append(amu.to_string(index=False))
 
     if st.session_state.merged_data is not None:
         m = st.session_state.merged_data
-        parts.append(f"Forecast: {len(m)} items matched between usage and inventory.")
-        soonest = m.nsmallest(5, 'TargetDate')[['Item', 'Master', 'AMU', 'TargetDate']].to_string(index=False)
-        parts.append(f"Items running out soonest:\n{soonest}")
+        parts.append(f"\n=== FORECAST TABLE ({len(m)} items) ===")
+        parts.append(m[['Item', 'Type', 'AMU', 'Branch', 'Master', 'TargetDate']].to_string(index=False))
 
     if st.session_state.stock_df is not None:
         s = st.session_state.stock_df
-        parts.append(f"Inventory: {len(s)} items in stock file.")
+        parts.append(f"\n=== INVENTORY TABLE ({len(s)} items) ===")
+        parts.append(s.to_string(index=False))
 
     if not parts:
-        return "No data has been loaded yet. Ask the user to upload data in Tab 1 first."
+        return "No data loaded yet. Ask the user to upload data first."
 
     return "\n\n".join(parts)
 
+
 def ask_ai(question, history):
+    """Calls Groq API with full data context and deep analysis instructions."""
     context = build_data_context()
-    
+
+    system = f"""You are an expert inventory analyst for a dental clinic with deep knowledge of supply chain management.
+
+You have access to the clinic's COMPLETE inventory data below.
+Perform detailed analysis when asked — calculate totals, identify patterns,
+flag risks, compare items, and give specific actionable recommendations.
+Always cite specific item names and numbers from the data.
+If asked to rank or compare, show a proper analysis.
+Respond in the same language as the user (English or Arabic).
+
+{context}"""
+
+    messages = [{"role": "system", "content": system}]
+    for h in history:
+        messages.append({"role": "user",      "content": h["user"]})
+        messages.append({"role": "assistant", "content": h["ai"]})
+    messages.append({"role": "user", "content": question})
+
     try:
         api_key = st.secrets["groq"]["api_key"]
-        
+
         import requests
-        
-        messages = [{"role": "system", "content": f"""You are an intelligent inventory assistant for a dental clinic.
-You have access to the clinic's current inventory data summarized below.
-Answer questions clearly and concisely. Use numbers from the data when relevant.
-
---- CLINIC DATA ---
-{context}
---- END DATA ---
-
-Keep answers brief (2-4 sentences). Respond in the same language as the user (English or Arabic)."""}]
-        
-        for h in history:
-            messages.append({"role": "user",      "content": h["user"]})
-            messages.append({"role": "assistant", "content": h["ai"]})
-        messages.append({"role": "user", "content": question})
-        
         resp = requests.post(
             "https://api.groq.com/openai/v1/chat/completions",
             headers={
@@ -930,22 +790,23 @@ Keep answers brief (2-4 sentences). Respond in the same language as the user (En
                 "Authorization" : f"Bearer {api_key}",
             },
             json={
-                "model"      : "llama-3.3-70b-versatile",
+                "model"      : "deepseek-r1-distill-llama-70b",
                 "messages"   : messages,
-                "max_tokens" : 1000,
+                "max_tokens" : 2000,
             },
             timeout=30
         )
-        
+
         data = resp.json()
-        
+
         if resp.status_code != 200:
             return f"⚠️ Error {resp.status_code}: {data.get('error', {}).get('message', str(data))}"
-        
+
         return data["choices"][0]["message"]["content"]
-        
+
     except Exception as e:
         return f"⚠️ Could not reach AI: {str(e)}"
+
 
 # =============================================================
 # INITIALIZE SESSION STATE
@@ -1002,7 +863,6 @@ with st.sidebar:
 
     st.divider()
 
-    # Status indicators
     st.markdown("**Data Status**")
     usage_ok = st.session_state.usage_mapped is not None
     stock_ok = st.session_state.stock_df is not None
@@ -1049,7 +909,6 @@ page = st.session_state.current_page
 if page == 'upload':
     page_header("Data Upload", "Connect your clinic data to get started")
 
-    # ── USAGE TRANSACTIONS ──────────────────────────────────
     st.markdown("### 📋 Usage Transactions")
 
     dl_col, _ = st.columns([2, 3])
@@ -1063,7 +922,6 @@ if page == 'upload':
             key                 = "dl_usage",
         )
 
-    # Entry mode selector
     usage_mode = st.radio(
         "Entry method",
         ["☁️ Upload any sheet", "⚡ Upload Dentolize export", "📋 Copy & Paste", "✏️ Manual entry"],
@@ -1084,7 +942,7 @@ if page == 'upload':
             usage_source_raw = load_excel_files(files)
 
     elif usage_mode == "⚡ Upload Dentolize export":
-        st.info("⚡ Dentolize mode — columns are mapped automatically. No configuration needed.")
+        st.info("⚡ Dentolize mode — columns are mapped automatically.")
         files = st.file_uploader(
             "Upload Dentolize transaction export(s)",
             accept_multiple_files = True,
@@ -1104,7 +962,7 @@ if page == 'upload':
                     st.error(f"❌ Could not auto-map Dentolize columns: {e}")
 
     elif usage_mode == "📋 Copy & Paste":
-        st.caption("Copy rows directly from Excel (including the header row) and paste below.")
+        st.caption("Copy rows directly from Excel and paste below.")
         pasted = st.text_area(
             "Paste here",
             height      = 180,
@@ -1120,7 +978,6 @@ if page == 'upload':
     elif usage_mode == "✏️ Manual entry":
         render_manual_entry_form('usage')
 
-    # Column mapper for generic upload and paste modes
     if usage_source_raw is not None and not usage_source_raw.empty:
         st.markdown("**Map columns to required fields:**")
         mapping = render_column_mapper(usage_source_raw, USAGE_FIELDS, "usage")
@@ -1133,7 +990,6 @@ if page == 'upload':
 
     st.divider()
 
-    # ── INVENTORY ───────────────────────────────────────────
     st.markdown("### 🗄️ Inventory")
 
     dl_col2, _ = st.columns([2, 3])
@@ -1215,7 +1071,6 @@ if page == 'upload':
 
     st.divider()
 
-    # ── AMU METHOD ──────────────────────────────────────────
     st.markdown("### 📐 AMU Calculation Method")
 
     selected_label = st.selectbox(
@@ -1277,15 +1132,13 @@ if page == 'upload':
     with st.expander("📖 How to use this page / كيفية استخدام هذه الصفحة"):
         st.markdown("""
         ### 🇬🇧 Four ways to get your data in
-
         - **Upload any sheet** — upload any Excel file then use the dropdowns to tell the app which column is which
-        - **Upload Dentolize export** — upload directly from Dentolize — no configuration needed, columns are detected automatically
-        - **Copy & Paste** — copy rows from any spreadsheet and paste directly — works with Excel, Google Sheets, Numbers
+        - **Upload Dentolize export** — upload directly from Dentolize — no configuration needed
+        - **Copy & Paste** — copy rows from any spreadsheet and paste directly
         - **Manual entry** — type rows one by one using the form fields
 
         ---
         ### 🇸🇦 أربع طرق لإدخال البيانات
-
         - **رفع أي ملف** — ارفع أي ملف Excel ثم حدد أي عمود يمثل كل حقل
         - **رفع تصدير Dentolize** — ارفع مباشرة من Dentolize دون أي إعداد إضافي
         - **نسخ ولصق** — انسخ الصفوف من أي جدول بيانات والصقها مباشرة
@@ -1334,18 +1187,6 @@ elif page == 'amu':
                 )
             else:
                 st.warning("Process data in the Upload page first.")
-
-    with st.expander("📖 Guide / دليل"):
-        st.markdown("""
-        **AMU = Total Quantity Used ÷ Number of Months in Window**
-
-        - **Raw Data** — your transactions as loaded
-        - **Consolidation** — grouped by item with totals
-        - **Final AMU** — monthly burn rate per item
-
-        ---
-        **متوسط الاستخدام الشهري = إجمالي الكمية المستخدمة ÷ عدد الأشهر**
-        """)
 
 
 # =============================================================
@@ -1396,18 +1237,6 @@ elif page == 'forecast':
                 mime      = "text/csv",
                 key       = "dl_forecast",
             )
-
-    with st.expander("📖 Guide / دليل"):
-        st.markdown("""
-        **Months Remaining = Master Stock ÷ AMU (rounded up)**
-
-        Items missing from Match Check have a name mismatch — go to the Adjust page.
-
-        ---
-        **الأشهر المتبقية = المخزون الرئيسي ÷ متوسط الاستخدام الشهري (مقرب للأعلى)**
-
-        الأصناف المفقودة من فحص المطابقة لها تباين في الاسم — انتقل إلى صفحة الضبط.
-        """)
 
 
 # =============================================================
@@ -1497,17 +1326,6 @@ elif page == 'shopping':
                 key                 = "dl_shop",
             )
 
-    with st.expander("📖 Guide / دليل"):
-        st.markdown("""
-        - **Qty_AMU** — order quantity. 1 for slow-moving items, rounded up otherwise.
-        - **Variance** — gap between highest and average price. High = volatile pricing.
-        - Use **Highest** price for management budgets, **Average** for planning.
-
-        ---
-        - **Qty_AMU** — كمية الطلب. 1 للأصناف بطيئة الحركة، مقربة للأعلى في غير ذلك.
-        - **التباين** — الفجوة بين أعلى سعر ومتوسط السعر. مرتفع = تسعير غير مستقر.
-        """)
-
 
 # =============================================================
 # PAGE: ADJUST
@@ -1548,17 +1366,6 @@ elif page == 'adjust':
             )
         else:
             st.success("✅ All inventory items are aligned with usage data.")
-
-    with st.expander("📖 Guide / دليل"):
-        st.markdown("""
-        Items in your Inventory but missing from the Forecast appear here.
-        The **Suggested Match** shows the closest name from your Usage data.
-        Fix the name in either Excel file and re-upload.
-
-        ---
-        الأصناف الموجودة في المخزون ولكنها مفقودة من التوقعات تظهر هنا.
-        يعرض عمود **الاقتراح المطابق** أقرب اسم من بيانات الاستخدام.
-        """)
 
 
 # =============================================================
@@ -1659,23 +1466,6 @@ elif page == 'anomaly':
                     st.success(f"{len(grn)} item(s) normal.")
                     st.dataframe(grn[dcols].rename(columns=drename), use_container_width=True)
 
-    with st.expander("📖 Guide / دليل"):
-        st.markdown("""
-        - 🔴 **Investigate** — 2.5× over threshold. Check for leakage or theft.
-        - 🟡 **Watch** — Over threshold. Monitor next window.
-        - 🔵 **Underuse** — Well below expected. Possible hoarding or missing records.
-        - 🟢 **Normal** — Within expected range.
-        - ⚠️ **New Item** — No history yet.
-
-        Start with **3 months / 20% / 30%** and adjust from there.
-
-        ---
-        - 🔴 **تحقيق** — أعلى بـ 2.5 مرة من الحد. تحقق من التسرب أو السرقة.
-        - 🟡 **مراقبة** — فوق الحد. راقب في النافذة التالية.
-        - 🔵 **انخفاض** — أقل بكثير من المتوقع.
-        - 🟢 **طبيعي** — ضمن النطاق.
-        """)
-
 
 # =============================================================
 # PAGE: AI ASSISTANT
@@ -1689,12 +1479,12 @@ elif page == 'ai':
         <p style="margin:0;color:#6b7c99;font-size:0.85rem;font-family:'DM Sans',sans-serif">
             🤖 Ask anything about your inventory — depletion dates, top consuming items,
             anomalies, budget estimates, or what to order next month.
+            Powered by DeepSeek R1 reasoning model via Groq.
             Responds in English or Arabic based on your question.
         </p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Chat history display
     if st.session_state.ai_history:
         for h in st.session_state.ai_history:
             with st.chat_message("user"):
@@ -1702,7 +1492,6 @@ elif page == 'ai':
             with st.chat_message("assistant"):
                 st.markdown(h["ai"])
 
-    # Input
     user_q = st.chat_input("Ask about your inventory data...")
     if user_q:
         with st.chat_message("user"):
@@ -1719,9 +1508,7 @@ elif page == 'ai':
             st.rerun()
 
     st.divider()
-    st.markdown("""
-    **Example questions / أمثلة على الأسئلة:**
-    """)
+    st.markdown("**Example questions / أمثلة على الأسئلة:**")
     examples = [
         "Which items are running out soonest?",
         "What should I order next month?",
@@ -1744,23 +1531,17 @@ elif page == 'ai':
 
 
 # =============================================================
-# FLOATING AI CHAT BUBBLE (visible on all pages except AI page)
+# FLOATING AI BUBBLE
 # =============================================================
 if page != 'ai':
     st.markdown("""
-    <div class="ai-bubble">
+    <div style="position:fixed;bottom:2rem;right:2rem;z-index:9999">
         <a href="?page=ai" style="text-decoration:none">
-            <div class="ai-bubble-btn" title="Open AI Assistant">🤖</div>
+            <div style="width:56px;height:56px;border-radius:50%;
+                        background:linear-gradient(135deg,#2e7cf6,#0ecfb0);
+                        display:flex;align-items:center;justify-content:center;
+                        box-shadow:0 4px 24px rgba(46,124,246,0.4);
+                        font-size:1.4rem;cursor:pointer">🤖</div>
         </a>
     </div>
     """, unsafe_allow_html=True)
-
-    # Streamlit-native floating chat (triggered by session state)
-    if st.session_state.get('ai_open', False):
-        with st.sidebar:
-            st.divider()
-            st.markdown("### 🤖 Quick AI Chat")
-            quick_q = st.text_input("Ask a question", key="bubble_q")
-            if st.button("Ask", key="bubble_ask") and quick_q:
-                resp = ask_ai(quick_q, [])
-                st.markdown(f"**Answer:** {resp}")
