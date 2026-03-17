@@ -902,64 +902,42 @@ def build_data_context():
 
 
 def ask_ai(question, history):
-    """Calls Anthropic API with data context and conversation history."""
     context = build_data_context()
-    system  = f"""You are an intelligent inventory assistant for a dental clinic.
-You have access to the clinic's current inventory data summarized below.
-Answer questions clearly and concisely. Use numbers from the data when relevant.
-If asked about something not in the data, say so honestly.
-
---- CLINIC DATA SNAPSHOT ---
+    
+    try:
+        api_key = st.secrets["gemini"]["api_key"]
+        
+        import requests
+        
+        # Build conversation for Gemini
+        chat_history = []
+        for h in history:
+            chat_history.append({"role": "user",  "parts": [{"text": h["user"]}]})
+            chat_history.append({"role": "model", "parts": [{"text": h["ai"]}]})
+        chat_history.append({"role": "user", "parts": [{"text": question}]})
+        
+        system = f"""You are an intelligent inventory assistant for a dental clinic.
+--- CLINIC DATA ---
 {context}
 --- END DATA ---
+Keep answers brief. Respond in the same language as the user (English or Arabic)."""
 
-Keep answers brief (2-4 sentences max unless a table is needed).
-Always respond in the same language the user writes in (English or Arabic)."""
-
-    messages = []
-    for h in history:
-        messages.append({"role": "user",      "content": h["user"]})
-        messages.append({"role": "assistant", "content": h["ai"]})
-    messages.append({"role": "user", "content": question})
-
-    try:
-        # Get API key - try secrets first, then environment variable
-        try:
-            api_key = st.secrets["anthropic"]["api_key"]
-        except Exception:
-            import os
-            api_key = os.environ.get("ANTHROPIC_API_KEY", "")
-        
-        if not api_key:
-            return "⚠️ No API key found. Add [anthropic] api_key to your Streamlit secrets."
-
-        import requests
         resp = requests.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "Content-Type"      : "application/json",
-                "x-api-key"         : api_key,
-                "anthropic-version" : "2023-06-01",
-            },
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}",
+            headers={"Content-Type": "application/json"},
             json={
-                "model"      : "claude-sonnet-4-20250514",
-                "max_tokens" : 1000,
-                "system"     : system,
-                "messages"   : messages,
+                "system_instruction": {"parts": [{"text": system}]},
+                "contents": chat_history,
             },
             timeout=30
         )
         
         data = resp.json()
         
-        # Show full error if something went wrong
         if resp.status_code != 200:
-            return f"⚠️ API Error {resp.status_code}: {data.get('error', {}).get('message', str(data))}"
+            return f"⚠️ Error {resp.status_code}: {data.get('error', {}).get('message', str(data))}"
         
-        if "content" not in data:
-            return f"⚠️ Unexpected response: {str(data)[:300]}"
-            
-        return data["content"][0]["text"]
+        return data["candidates"][0]["content"]["parts"][0]["text"]
         
     except Exception as e:
         return f"⚠️ Could not reach AI: {str(e)}"
