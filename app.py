@@ -923,7 +923,7 @@ def ask_ai(question, history):
 Keep answers brief. Respond in the same language as the user (English or Arabic)."""
 
         resp = requests.post(
-            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}",
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}",
             headers={"Content-Type": "application/json"},
             json={
                 "system_instruction": {"parts": [{"text": system}]},
