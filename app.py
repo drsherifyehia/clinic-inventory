@@ -923,13 +923,23 @@ Always respond in the same language the user writes in (English or Arabic)."""
     messages.append({"role": "user", "content": question})
 
     try:
+        # Get API key - try secrets first, then environment variable
+        try:
+            api_key = st.secrets["anthropic"]["api_key"]
+        except Exception:
+            import os
+            api_key = os.environ.get("ANTHROPIC_API_KEY", "")
+        
+        if not api_key:
+            return "⚠️ No API key found. Add [anthropic] api_key to your Streamlit secrets."
+
         import requests
         resp = requests.post(
             "https://api.anthropic.com/v1/messages",
             headers={
-                "Content-Type": "application/json",
-                "x-api-key": st.secrets["anthropic"]["api_key"],   # ← ADD THIS
-                "anthropic-version": "2023-06-01",                  # ← ADD THIS
+                "Content-Type"      : "application/json",
+                "x-api-key"         : api_key,
+                "anthropic-version" : "2023-06-01",
             },
             json={
                 "model"      : "claude-sonnet-4-20250514",
@@ -939,8 +949,18 @@ Always respond in the same language the user writes in (English or Arabic)."""
             },
             timeout=30
         )
+        
         data = resp.json()
+        
+        # Show full error if something went wrong
+        if resp.status_code != 200:
+            return f"⚠️ API Error {resp.status_code}: {data.get('error', {}).get('message', str(data))}"
+        
+        if "content" not in data:
+            return f"⚠️ Unexpected response: {str(data)[:300]}"
+            
         return data["content"][0]["text"]
+        
     except Exception as e:
         return f"⚠️ Could not reach AI: {str(e)}"
 
