@@ -6,13 +6,13 @@ from datetime import date, datetime
 from difflib import get_close_matches
 
 # =============================================================
-# DARK MODE CSS â€” injected before anything renders
+# DARK MODE CSS — injected before anything renders
 # =============================================================
 DARK_CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
 
-/* â”€â”€ Root tokens â”€â”€ */
+/* ── Root tokens ── */
 :root {
     --bg-base:      #0a0d12;
     --bg-surface:   #111620;
@@ -32,7 +32,7 @@ DARK_CSS = """
     --radius-lg:    16px;
 }
 
-/* â”€â”€ Global reset â”€â”€ */
+/* ── Global reset ── */
 html, body, [data-testid="stAppViewContainer"],
 [data-testid="stApp"], .main, .block-container {
     background-color: var(--bg-base) !important;
@@ -40,7 +40,7 @@ html, body, [data-testid="stAppViewContainer"],
     font-family: 'DM Sans', sans-serif !important;
 }
 
-/* â”€â”€ Text Visibility Overrides (Fixes light mode text on dark bg) â”€â”€ */
+/* ── Text Visibility Overrides (Fixes light mode text on dark bg) ── */
 [data-testid="stAppViewContainer"] p:not([style*="color"]),
 [data-testid="stAppViewContainer"] span:not([style*="color"]),
 [data-testid="stAppViewContainer"] li:not([style*="color"]),
@@ -49,7 +49,7 @@ html, body, [data-testid="stAppViewContainer"],
     color: var(--text-primary) !important;
 }
 
-/* â”€â”€ Sidebar â”€â”€ */
+/* ── Sidebar ── */
 [data-testid="stSidebar"] {
     background-color: var(--bg-surface) !important;
     border-right: 1px solid var(--border) !important;
@@ -61,7 +61,7 @@ html, body, [data-testid="stAppViewContainer"],
     padding-top: 1rem;
 }
 
-/* â”€â”€ Headers â”€â”€ */
+/* ── Headers ── */
 h1, h2, h3, h4 {
     font-family: 'DM Sans', sans-serif !important;
     font-weight: 600 !important;
@@ -69,7 +69,7 @@ h1, h2, h3, h4 {
     letter-spacing: -0.02em;
 }
 
-/* â”€â”€ Buttons â”€â”€ */
+/* ── Buttons ── */
 .stButton > button {
     background: linear-gradient(135deg, var(--accent-blue), #1a56d6) !important;
     color: #fff !important;
@@ -87,7 +87,7 @@ h1, h2, h3, h4 {
     box-shadow: 0 4px 20px rgba(46,124,246,0.4) !important;
 }
 
-/* â”€â”€ Inputs, selects, text areas â”€â”€ */
+/* ── Inputs, selects, text areas ── */
 .stTextInput > div > div > input,
 .stTextArea > div > div > textarea,
 .stSelectbox > div > div > div,
@@ -104,7 +104,7 @@ h1, h2, h3, h4 {
     box-shadow: 0 0 0 2px rgba(46,124,246,0.15) !important;
 }
 
-/* â”€â”€ File uploader â”€â”€ */
+/* ── File uploader ── */
 [data-testid="stFileUploader"] {
     background-color: var(--bg-card) !important;
     border: 1px dashed var(--border) !important;
@@ -115,7 +115,7 @@ h1, h2, h3, h4 {
     border-color: var(--accent-blue) !important;
 }
 
-/* â”€â”€ Metrics â”€â”€ */
+/* ── Metrics ── */
 [data-testid="stMetric"] {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -134,7 +134,7 @@ h1, h2, h3, h4 {
     font-size: 1.6rem !important;
 }
 
-/* â”€â”€ Dataframe â”€â”€ */
+/* ── Dataframe ── */
 [data-testid="stDataFrameContainer"] {
     border-radius: var(--radius-lg) !important;
     border: 1px solid var(--border) !important;
@@ -143,7 +143,7 @@ h1, h2, h3, h4 {
 /* Note: Removed forced .dvn-scroller background override. Dataframes use HTML5 canvas 
    which ignores CSS text color. Forcing it dark causes invisible black text. */
 
-/* â”€â”€ Tabs â”€â”€ */
+/* ── Tabs ── */
 .stTabs [data-baseweb="tab-list"] {
     background-color: var(--bg-surface) !important;
     border-radius: var(--radius) !important;
@@ -167,7 +167,7 @@ h1, h2, h3, h4 {
     color: var(--text-primary) !important;
 }
 
-/* â”€â”€ Expander â”€â”€ */
+/* ── Expander ── */
 .streamlit-expanderHeader {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -181,7 +181,7 @@ h1, h2, h3, h4 {
     border-top: none !important;
 }
 
-/* â”€â”€ Alerts â”€â”€ */
+/* ── Alerts ── */
 .stAlert {
     border-radius: var(--radius) !important;
     border: none !important;
@@ -192,7 +192,7 @@ h1, h2, h3, h4 {
 [data-testid="stErrorBox"]   { background-color: rgba(246,62,62,0.08) !important;  border-left: 3px solid var(--accent-red) !important; }
 [data-testid="stSuccessBox"] { background-color: rgba(34,197,94,0.08) !important;  border-left: 3px solid var(--accent-green) !important; }
 
-/* â”€â”€ Selectbox dropdown â”€â”€ */
+/* ── Selectbox dropdown ── */
 [data-baseweb="popover"], [data-baseweb="menu"] {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -206,15 +206,15 @@ h1, h2, h3, h4 {
     background-color: var(--bg-input) !important;
 }
 
-/* â”€â”€ Divider â”€â”€ */
+/* ── Divider ── */
 hr { border-color: var(--border) !important; }
 
-/* â”€â”€ Scrollbar â”€â”€ */
+/* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 
-/* â”€â”€ Download button â”€â”€ */
+/* ── Download button ── */
 .stDownloadButton > button {
     background: var(--bg-card) !important;
     color: var(--accent-blue) !important;
@@ -229,7 +229,7 @@ hr { border-color: var(--border) !important; }
     box-shadow: 0 0 0 2px rgba(46,124,246,0.15) !important;
 }
 
-/* â”€â”€ Radio buttons â”€â”€ */
+/* ── Radio buttons ── */
 .stRadio > div {
     background-color: var(--bg-card) !important;
     border: 1px solid var(--border) !important;
@@ -241,7 +241,7 @@ hr { border-color: var(--border) !important; }
     font-family: 'DM Sans', sans-serif !important;
 }
 
-/* â”€â”€ Multiselect â”€â”€ */
+/* ── Multiselect ── */
 [data-baseweb="tag"] {
     background-color: rgba(46,124,246,0.15) !important;
     border: 1px solid rgba(46,124,246,0.3) !important;
@@ -251,12 +251,12 @@ hr { border-color: var(--border) !important; }
     color: var(--accent-blue) !important;
 }
 
-/* â”€â”€ Slider â”€â”€ */
+/* ── Slider ── */
 [data-testid="stSlider"] > div > div > div {
     background-color: var(--accent-blue) !important;
 }
 
-/* â”€â”€ AI Chat Bubble â”€â”€ */
+/* ── AI Chat Bubble ── */
 .ai-bubble {
     position: fixed;
     bottom: 2rem;
@@ -340,7 +340,7 @@ hr { border-color: var(--border) !important; }
     line-height: 1.5;
 }
 
-/* â”€â”€ Card component â”€â”€ */
+/* ── Card component ── */
 .clinic-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
@@ -349,7 +349,7 @@ hr { border-color: var(--border) !important; }
     margin-bottom: 1rem;
 }
 
-/* â”€â”€ Page header â”€â”€ */
+/* ── Page header ── */
 .page-header {
     padding: 1.5rem 0 1rem 0;
     border-bottom: 1px solid var(--border);
@@ -368,7 +368,7 @@ hr { border-color: var(--border) !important; }
     font-size: 0.85rem;
 }
 
-/* â”€â”€ Entry mode card â”€â”€ */
+/* ── Entry mode card ── */
 .entry-mode-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border);
@@ -400,7 +400,7 @@ hr { border-color: var(--border) !important; }
     font-family: 'DM Sans', sans-serif;
 }
 
-/* â”€â”€ Sidebar logo â”€â”€ */
+/* ── Sidebar logo ── */
 .sidebar-logo {
     padding: 1.2rem 1rem 0.5rem 1rem;
     border-bottom: 1px solid var(--border);
@@ -420,7 +420,7 @@ hr { border-color: var(--border) !important; }
     margin: 0.15rem 0 0 0;
 }
 
-/* â”€â”€ Status badge â”€â”€ */
+/* ── Status badge ── */
 .badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
@@ -450,7 +450,7 @@ def check_password():
     st.markdown(DARK_CSS, unsafe_allow_html=True)
     st.markdown("""
     <div style="max-width:400px;margin:8rem auto;text-align:center">
-        <div style="font-size:3rem;margin-bottom:1rem">ðŸ¦·</div>
+        <div style="font-size:3rem;margin-bottom:1rem">🦷</div>
         <h1 style="font-family:'DM Sans',sans-serif;font-size:1.6rem;font-weight:600;
                    background:linear-gradient(90deg,#2e7cf6,#0ecfb0);
                    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -470,7 +470,7 @@ def check_password():
             placeholder      = "Enter password...",
             key              = "login_password"
         )
-        if st.button("Continue â†’", use_container_width=True):
+        if st.button("Continue →", use_container_width=True):
             if entered == st.secrets["auth"]["password"]:
                 st.session_state.authenticated = True
                 st.rerun()
@@ -486,7 +486,7 @@ if not check_password():
 st.set_page_config(
     page_title = "Clinic Inventory Hub",
     layout     = "wide",
-    page_icon  = "ðŸ¦·",
+    page_icon  = "🦷",
     initial_sidebar_state = "expanded"
 )
 st.markdown(DARK_CSS, unsafe_allow_html=True)
@@ -496,9 +496,9 @@ st.markdown(DARK_CSS, unsafe_allow_html=True)
 # CONSTANTS
 # =============================================================
 METHOD_LABELS = {
-    "first_transaction" : "ðŸ“Œ First Transaction Date",
-    "rolling_window"    : "ðŸ” Rolling Window (last N months)",
-    "date_range"        : "ðŸ“… Custom Date Range",
+    "first_transaction" : "📌 First Transaction Date",
+    "rolling_window"    : "🔁 Rolling Window (last N months)",
+    "date_range"        : "📅 Custom Date Range",
 }
 
 PRICE_METHODS = {
@@ -508,18 +508,18 @@ PRICE_METHODS = {
 }
 
 USAGE_FIELDS = {
-    "Created" : "ðŸ“… Transaction Date",
-    "Item"    : "ðŸ·ï¸ Item Name",
-    "Type"    : "ðŸ“‚ Category / Type",
-    "Amount"  : "ðŸ”¢ Quantity Used",
-    "Price"   : "ðŸ’° Unit Price",
+    "Created" : "📅 Transaction Date",
+    "Item"    : "🏷️ Item Name",
+    "Type"    : "📂 Category / Type",
+    "Amount"  : "🔢 Quantity Used",
+    "Price"   : "💰 Unit Price",
 }
 
 STOCK_FIELDS = {
-    "Item"    : "ðŸ·ï¸ Item Name",
-    "Type_S2" : "ðŸ“‚ Category / Type",
-    "Branch"  : "ðŸ¢ Branch Stock",
-    "Master"  : "ðŸ—„ï¸ Master Stock",
+    "Item"    : "🏷️ Item Name",
+    "Type_S2" : "📂 Category / Type",
+    "Branch"  : "🏢 Branch Stock",
+    "Master"  : "🗄️ Master Stock",
 }
 
 # Dentolize fixed column indices (confirmed from file analysis)
@@ -535,18 +535,18 @@ MONTH_OPTIONS = [
 ]
 
 PAGES = [
-    ("ðŸ“‚", "Upload",            "upload"),
-    ("ðŸ“Š", "AMU",               "amu"),
-    ("âš™ï¸", "Forecast",          "forecast"),
-    ("ðŸ›’", "Shopping List",     "shopping"),
-    ("ðŸ› ï¸", "Adjust",            "adjust"),
-    ("ðŸš¨", "Anomaly Detection", "anomaly"),
-    ("ðŸ¤–", "AI Assistant",      "ai"),
+    ("📂", "Upload",            "upload"),
+    ("📊", "AMU",               "amu"),
+    ("⚙️", "Forecast",          "forecast"),
+    ("🛒", "Shopping List",     "shopping"),
+    ("🛠️", "Adjust",            "adjust"),
+    ("🚨", "Anomaly Detection", "anomaly"),
+    ("🤖", "AI Assistant",      "ai"),
 ]
 
 
 # =============================================================
-# HELPERS â€” UI
+# HELPERS — UI
 # =============================================================
 def page_header(title, subtitle=""):
     st.markdown(f"""
@@ -607,11 +607,11 @@ def parse_pasted_data(pasted_text, source_name):
             df = pd.read_csv(io.StringIO(pasted_text), sep=',')
         df = df.dropna(how='all')
         if df.empty:
-            st.warning(f"âš ï¸ Pasted data for {source_name} appears empty.")
+            st.warning(f"⚠️ Pasted data for {source_name} appears empty.")
             return None
         return df
     except Exception as e:
-        st.error(f"âŒ Could not parse pasted data for {source_name}: {e}")
+        st.error(f"❌ Could not parse pasted data for {source_name}: {e}")
         return None
 
 
@@ -619,7 +619,7 @@ def parse_pasted_data(pasted_text, source_name):
 # COLUMN MAPPER UI
 # =============================================================
 def render_column_mapper(df, fields, key_prefix):
-    cols_available = ["â€” select â€”"] + list(df.columns)
+    cols_available = ["— select —"] + list(df.columns)
     mapping  = {}
     complete = True
 
@@ -633,7 +633,7 @@ def render_column_mapper(df, fields, key_prefix):
             default_idx = cols_available.index(suggestion) if suggestion else 0
             chosen = st.selectbox(label, options=cols_available, index=default_idx,
                                   key=f"{key_prefix}_{internal}")
-            if chosen == "â€” select â€”":
+            if chosen == "— select —":
                 complete = False
             else:
                 mapping[internal] = chosen
@@ -674,7 +674,7 @@ def render_manual_entry_form(target):
         with c4: m_amount = st.number_input("Quantity", min_value=0.0, key="man_amount")
         with c5: m_price  = st.number_input("Price", min_value=0.0, key="man_price")
 
-        if st.button("âž• Add Row", key="man_add_usage"):
+        if st.button("➕ Add Row", key="man_add_usage"):
             if m_item:
                 new_row = pd.DataFrame([{
                     "Created": pd.to_datetime(m_date),
@@ -691,10 +691,10 @@ def render_manual_entry_form(target):
 
         if 'manual_usage' in st.session_state and not st.session_state.manual_usage.empty:
             st.dataframe(st.session_state.manual_usage, use_container_width=True)
-            if st.button("âœ… Use this as Usage Data", key="man_use_usage"):
+            if st.button("✅ Use this as Usage Data", key="man_use_usage"):
                 st.session_state.usage_mapped = st.session_state.manual_usage.copy()
                 st.session_state.usage_raw    = st.session_state.manual_usage.copy()
-                st.success("âœ… Manual usage data saved.")
+                st.success("✅ Manual usage data saved.")
 
     else:
         st.markdown("**Add an inventory item:**")
@@ -704,7 +704,7 @@ def render_manual_entry_form(target):
         with c3: s_branch = st.number_input("Branch Stock", min_value=0.0, key="man_s_branch")
         with c4: s_master = st.number_input("Master Stock", min_value=0.0, key="man_s_master")
 
-        if st.button("âž• Add Row", key="man_add_stock"):
+        if st.button("➕ Add Row", key="man_add_stock"):
             if s_item:
                 new_row = pd.DataFrame([{
                     "Item"    : s_item,
@@ -720,10 +720,10 @@ def render_manual_entry_form(target):
 
         if 'manual_stock' in st.session_state and not st.session_state.manual_stock.empty:
             st.dataframe(st.session_state.manual_stock, use_container_width=True)
-            if st.button("âœ… Use this as Inventory Data", key="man_use_stock"):
+            if st.button("✅ Use this as Inventory Data", key="man_use_stock"):
                 st.session_state.stock_df     = st.session_state.manual_stock.copy()
                 st.session_state.stock_mapped = st.session_state.manual_stock.copy()
-                st.success("âœ… Manual inventory data saved.")
+                st.success("✅ Manual inventory data saved.")
 
 
 # =============================================================
@@ -863,11 +863,11 @@ def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_t
     pct  = r['Variance_%_raw']
     r['Flag'] = np.select(
         [pct >= over_t*2.5, pct >= over_t, pct <= -under_t*2.5, pct <= -under_t],
-        ['ðŸ”´ Investigate', 'ðŸŸ¡ Watch', 'ðŸ”µ Severely Under', 'ðŸ”µ Under'],
-        default='ðŸŸ¢ Normal'
+        ['🔴 Investigate', '🟡 Watch', '🔵 Severely Under', '🔵 Under'],
+        default='🟢 Normal'
     )
     r['Variance_%'] = r['Variance_%_raw'].apply(
-        lambda x: 'âš ï¸ New Item' if x == 999.0 else f"{x:+.1f}%"
+        lambda x: '⚠️ New Item' if x == 999.0 else f"{x:+.1f}%"
     )
     return r.sort_values('Variance_%_raw', ascending=False)
 
@@ -938,7 +938,7 @@ Always respond in the same language the user writes in (English or Arabic)."""
         data = resp.json()
         return data["content"][0]["text"]
     except Exception as e:
-        return f"âš ï¸ Could not reach AI: {str(e)}"
+        return f"⚠️ Could not reach AI: {str(e)}"
 
 
 # =============================================================
@@ -973,7 +973,7 @@ for k, v in defaults.items():
 with st.sidebar:
     st.markdown("""
     <div class="sidebar-logo">
-        <h1>ðŸ¦· Clinic Hub</h1>
+        <h1>🦷 Clinic Hub</h1>
         <p>Inventory Management System</p>
     </div>
     """, unsafe_allow_html=True)
@@ -1007,19 +1007,19 @@ with st.sidebar:
         <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="color:#6b7c99;font-size:0.8rem;font-family:'DM Sans',sans-serif">Usage Data</span>
             <span class="badge {'badge-green' if usage_ok else 'badge-amber'}">
-                {'âœ“ Ready' if usage_ok else 'â—‹ Empty'}
+                {'✓ Ready' if usage_ok else '○ Empty'}
             </span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="color:#6b7c99;font-size:0.8rem;font-family:'DM Sans',sans-serif">Inventory</span>
             <span class="badge {'badge-green' if stock_ok else 'badge-amber'}">
-                {'âœ“ Ready' if stock_ok else 'â—‹ Empty'}
+                {'✓ Ready' if stock_ok else '○ Empty'}
             </span>
         </div>
         <div style="display:flex;justify-content:space-between;align-items:center">
             <span style="color:#6b7c99;font-size:0.8rem;font-family:'DM Sans',sans-serif">AMU Calculated</span>
             <span class="badge {'badge-green' if amu_ok else 'badge-amber'}">
-                {'âœ“ Done' if amu_ok else 'â—‹ Pending'}
+                {'✓ Done' if amu_ok else '○ Pending'}
             </span>
         </div>
     </div>
@@ -1043,13 +1043,13 @@ page = st.session_state.current_page
 if page == 'upload':
     page_header("Data Upload", "Connect your clinic data to get started")
 
-    # â”€â”€ USAGE TRANSACTIONS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.markdown("### ðŸ“‹ Usage Transactions")
+    # ── USAGE TRANSACTIONS ──────────────────────────────────
+    st.markdown("### 📋 Usage Transactions")
 
     dl_col, _ = st.columns([2, 3])
     with dl_col:
         st.download_button(
-            "â¬‡ï¸ Download Template",
+            "⬇️ Download Template",
             data                = generate_usage_template(),
             file_name           = "usage_template.xlsx",
             mime                = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1060,7 +1060,7 @@ if page == 'upload':
     # Entry mode selector
     usage_mode = st.radio(
         "Entry method",
-        ["â˜ï¸ Upload any sheet", "âš¡ Upload Dentolize export", "ðŸ“‹ Copy & Paste", "âœï¸ Manual entry"],
+        ["☁️ Upload any sheet", "⚡ Upload Dentolize export", "📋 Copy & Paste", "✏️ Manual entry"],
         horizontal        = True,
         key               = "usage_entry_mode",
         label_visibility  = "collapsed",
@@ -1068,7 +1068,7 @@ if page == 'upload':
 
     usage_source_raw = None
 
-    if usage_mode == "â˜ï¸ Upload any sheet":
+    if usage_mode == "☁️ Upload any sheet":
         files = st.file_uploader(
             "Upload one or more Excel files",
             accept_multiple_files = True,
@@ -1077,8 +1077,8 @@ if page == 'upload':
         if files:
             usage_source_raw = load_excel_files(files)
 
-    elif usage_mode == "âš¡ Upload Dentolize export":
-        st.info("âš¡ Dentolize mode â€” columns are mapped automatically. No configuration needed.")
+    elif usage_mode == "⚡ Upload Dentolize export":
+        st.info("⚡ Dentolize mode — columns are mapped automatically. No configuration needed.")
         files = st.file_uploader(
             "Upload Dentolize transaction export(s)",
             accept_multiple_files = True,
@@ -1091,13 +1091,13 @@ if page == 'upload':
                     mapped = apply_dentolize_usage(raw)
                     st.session_state.usage_raw    = raw
                     st.session_state.usage_mapped = mapped
-                    st.success(f"âœ… Dentolize usage data loaded â€” {len(mapped):,} rows, auto-mapped.")
+                    st.success(f"✅ Dentolize usage data loaded — {len(mapped):,} rows, auto-mapped.")
                     with st.expander("Preview"):
                         st.dataframe(mapped.head(5), use_container_width=True)
                 except Exception as e:
-                    st.error(f"âŒ Could not auto-map Dentolize columns: {e}")
+                    st.error(f"❌ Could not auto-map Dentolize columns: {e}")
 
-    elif usage_mode == "ðŸ“‹ Copy & Paste":
+    elif usage_mode == "📋 Copy & Paste":
         st.caption("Copy rows directly from Excel (including the header row) and paste below.")
         pasted = st.text_area(
             "Paste here",
@@ -1108,10 +1108,10 @@ if page == 'upload':
         if pasted:
             usage_source_raw = parse_pasted_data(pasted, "Usage Transactions")
             if usage_source_raw is not None:
-                st.success(f"âœ… Detected {len(usage_source_raw):,} rows.")
+                st.success(f"✅ Detected {len(usage_source_raw):,} rows.")
                 st.dataframe(usage_source_raw.head(5), use_container_width=True)
 
-    elif usage_mode == "âœï¸ Manual entry":
+    elif usage_mode == "✏️ Manual entry":
         render_manual_entry_form('usage')
 
     # Column mapper for generic upload and paste modes
@@ -1121,19 +1121,19 @@ if page == 'upload':
         if mapping:
             st.session_state.usage_raw    = usage_source_raw
             st.session_state.usage_mapped = apply_mapping(usage_source_raw, mapping)
-            st.success("âœ… Column mapping complete.")
+            st.success("✅ Column mapping complete.")
             with st.expander("Preview mapped data"):
                 st.dataframe(st.session_state.usage_mapped.head(5), use_container_width=True)
 
     st.divider()
 
-    # â”€â”€ INVENTORY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.markdown("### ðŸ—„ï¸ Inventory")
+    # ── INVENTORY ───────────────────────────────────────────
+    st.markdown("### 🗄️ Inventory")
 
     dl_col2, _ = st.columns([2, 3])
     with dl_col2:
         st.download_button(
-            "â¬‡ï¸ Download Template",
+            "⬇️ Download Template",
             data                = generate_stock_template(),
             file_name           = "inventory_template.xlsx",
             mime                = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -1143,7 +1143,7 @@ if page == 'upload':
 
     stock_mode = st.radio(
         "Entry method",
-        ["â˜ï¸ Upload any sheet", "âš¡ Upload Dentolize export", "ðŸ“‹ Copy & Paste", "âœï¸ Manual entry"],
+        ["☁️ Upload any sheet", "⚡ Upload Dentolize export", "📋 Copy & Paste", "✏️ Manual entry"],
         horizontal       = True,
         key              = "stock_entry_mode",
         label_visibility = "collapsed",
@@ -1151,35 +1151,35 @@ if page == 'upload':
 
     stock_source_raw = None
 
-    if stock_mode == "â˜ï¸ Upload any sheet":
+    if stock_mode == "☁️ Upload any sheet":
         sf = st.file_uploader("Upload inventory Excel file", type=["xlsx"], key="up_stock_generic")
         if sf:
             res = load_single_excel(sf)
             if isinstance(res, str):
-                st.error(f"âŒ {res}")
+                st.error(f"❌ {res}")
             else:
                 stock_source_raw = res
 
-    elif stock_mode == "âš¡ Upload Dentolize export":
-        st.info("âš¡ Dentolize mode â€” columns are mapped automatically.")
+    elif stock_mode == "⚡ Upload Dentolize export":
+        st.info("⚡ Dentolize mode — columns are mapped automatically.")
         sf = st.file_uploader("Upload Dentolize inventory export", type=["xlsx"], key="up_stock_dentolize")
         if sf:
             res = load_single_excel(sf)
             if isinstance(res, str):
-                st.error(f"âŒ {res}")
+                st.error(f"❌ {res}")
             else:
                 try:
                     mapped = apply_dentolize_stock(res)
                     mapped = mapped.dropna(how='all')
                     st.session_state.stock_df     = mapped
                     st.session_state.stock_mapped = mapped
-                    st.success(f"âœ… Dentolize inventory loaded â€” {len(mapped):,} items, auto-mapped.")
+                    st.success(f"✅ Dentolize inventory loaded — {len(mapped):,} items, auto-mapped.")
                     with st.expander("Preview"):
                         st.dataframe(mapped.head(5), use_container_width=True)
                 except Exception as e:
-                    st.error(f"âŒ Could not auto-map Dentolize columns: {e}")
+                    st.error(f"❌ Could not auto-map Dentolize columns: {e}")
 
-    elif stock_mode == "ðŸ“‹ Copy & Paste":
+    elif stock_mode == "📋 Copy & Paste":
         st.caption("Copy rows directly from Excel and paste below.")
         pasted_s = st.text_area(
             "Paste here",
@@ -1190,10 +1190,10 @@ if page == 'upload':
         if pasted_s:
             stock_source_raw = parse_pasted_data(pasted_s, "Inventory")
             if stock_source_raw is not None:
-                st.success(f"âœ… Detected {len(stock_source_raw):,} rows.")
+                st.success(f"✅ Detected {len(stock_source_raw):,} rows.")
                 st.dataframe(stock_source_raw.head(5), use_container_width=True)
 
-    elif stock_mode == "âœï¸ Manual entry":
+    elif stock_mode == "✏️ Manual entry":
         render_manual_entry_form('stock')
 
     if stock_source_raw is not None and not stock_source_raw.empty:
@@ -1203,14 +1203,14 @@ if page == 'upload':
             mapped = apply_mapping(stock_source_raw, s_mapping).dropna(how='all')
             st.session_state.stock_df     = mapped
             st.session_state.stock_mapped = mapped
-            st.success("âœ… Column mapping complete.")
+            st.success("✅ Column mapping complete.")
             with st.expander("Preview mapped data"):
                 st.dataframe(mapped.head(5), use_container_width=True)
 
     st.divider()
 
-    # â”€â”€ AMU METHOD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    st.markdown("### ðŸ“ AMU Calculation Method")
+    # ── AMU METHOD ──────────────────────────────────────────
+    st.markdown("### 📐 AMU Calculation Method")
 
     selected_label = st.selectbox(
         "Method",
@@ -1234,7 +1234,7 @@ if page == 'upload':
 
     st.divider()
 
-    if st.button("ðŸš€ Process & Sync All Data", use_container_width=True):
+    if st.button("🚀 Process & Sync All Data", use_container_width=True):
         st.session_state.amu_method = chosen_method
         if chosen_method == 'rolling_window':
             st.session_state.amu_rolling_months = rolling_val
@@ -1251,39 +1251,39 @@ if page == 'upload':
                 date_to        = st.session_state.amu_date_to,
             )
             if cons_df.empty:
-                st.error("âŒ No data in the selected window. Try a wider range.")
+                st.error("❌ No data in the selected window. Try a wider range.")
             else:
                 st.session_state.cons_view   = cons_df
                 st.session_state.shared_amu  = amu_df
                 st.session_state.merged_data = None
                 st.session_state.data_hash   = str(pd.Timestamp.now())
-                st.success(f"âœ… {len(amu_df):,} items processed â€” AMU calculated.")
+                st.success(f"✅ {len(amu_df):,} items processed — AMU calculated.")
         else:
-            st.warning("âš ï¸ Upload and map usage data first.")
+            st.warning("⚠️ Upload and map usage data first.")
 
         if st.session_state.stock_mapped is not None:
             st.session_state.stock_df    = st.session_state.stock_mapped
             st.session_state.merged_data = None
-            st.success(f"âœ… {len(st.session_state.stock_df):,} inventory items synced.")
+            st.success(f"✅ {len(st.session_state.stock_df):,} inventory items synced.")
         else:
-            st.warning("âš ï¸ Upload and map inventory data first.")
+            st.warning("⚠️ Upload and map inventory data first.")
 
-    with st.expander("ðŸ“– How to use this page / ÙƒÙŠÙÙŠØ© Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù‡Ø°Ù‡ Ø§Ù„ØµÙØ­Ø©"):
+    with st.expander("📖 How to use this page / كيفية استخدام هذه الصفحة"):
         st.markdown("""
-        ### ðŸ‡¬ðŸ‡§ Four ways to get your data in
+        ### 🇬🇧 Four ways to get your data in
 
-        - **Upload any sheet** â€” upload any Excel file then use the dropdowns to tell the app which column is which
-        - **Upload Dentolize export** â€” upload directly from Dentolize â€” no configuration needed, columns are detected automatically
-        - **Copy & Paste** â€” copy rows from any spreadsheet and paste directly â€” works with Excel, Google Sheets, Numbers
-        - **Manual entry** â€” type rows one by one using the form fields
+        - **Upload any sheet** — upload any Excel file then use the dropdowns to tell the app which column is which
+        - **Upload Dentolize export** — upload directly from Dentolize — no configuration needed, columns are detected automatically
+        - **Copy & Paste** — copy rows from any spreadsheet and paste directly — works with Excel, Google Sheets, Numbers
+        - **Manual entry** — type rows one by one using the form fields
 
         ---
-        ### ðŸ‡¸ðŸ‡¦ Ø£Ø±Ø¨Ø¹ Ø·Ø±Ù‚ Ù„Ø¥Ø¯Ø®Ø§Ù„ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª
+        ### 🇸🇦 أربع طرق لإدخال البيانات
 
-        - **Ø±ÙØ¹ Ø£ÙŠ Ù…Ù„Ù** â€” Ø§Ø±ÙØ¹ Ø£ÙŠ Ù…Ù„Ù Excel Ø«Ù… Ø­Ø¯Ø¯ Ø£ÙŠ Ø¹Ù…ÙˆØ¯ ÙŠÙ…Ø«Ù„ ÙƒÙ„ Ø­Ù‚Ù„
-        - **Ø±ÙØ¹ ØªØµØ¯ÙŠØ± Dentolize** â€” Ø§Ø±ÙØ¹ Ù…Ø¨Ø§Ø´Ø±Ø© Ù…Ù† Dentolize Ø¯ÙˆÙ† Ø£ÙŠ Ø¥Ø¹Ø¯Ø§Ø¯ Ø¥Ø¶Ø§ÙÙŠ
-        - **Ù†Ø³Ø® ÙˆÙ„ØµÙ‚** â€” Ø§Ù†Ø³Ø® Ø§Ù„ØµÙÙˆÙ Ù…Ù† Ø£ÙŠ Ø¬Ø¯ÙˆÙ„ Ø¨ÙŠØ§Ù†Ø§Øª ÙˆØ§Ù„ØµÙ‚Ù‡Ø§ Ù…Ø¨Ø§Ø´Ø±Ø©
-        - **Ø¥Ø¯Ø®Ø§Ù„ ÙŠØ¯ÙˆÙŠ** â€” Ø£Ø¯Ø®Ù„ Ø§Ù„ØµÙÙˆÙ ÙˆØ§Ø­Ø¯Ø§Ù‹ ØªÙ„Ùˆ Ø§Ù„Ø¢Ø®Ø±
+        - **رفع أي ملف** — ارفع أي ملف Excel ثم حدد أي عمود يمثل كل حقل
+        - **رفع تصدير Dentolize** — ارفع مباشرة من Dentolize دون أي إعداد إضافي
+        - **نسخ ولصق** — انسخ الصفوف من أي جدول بيانات والصقها مباشرة
+        - **إدخال يدوي** — أدخل الصفوف واحداً تلو الآخر
         """)
 
 
@@ -1294,7 +1294,7 @@ elif page == 'amu':
     page_header("Average Monthly Usage", "Consumption burn rate per item")
 
     if st.session_state.usage_raw is None or st.session_state.usage_raw.empty:
-        st.warning("âš ï¸ Upload usage data first â€” go to the Upload page.")
+        st.warning("⚠️ Upload usage data first — go to the Upload page.")
     else:
         st.markdown(f"""
         <span class="badge badge-blue">{METHOD_LABELS[st.session_state.amu_method]}</span>
@@ -1320,7 +1320,7 @@ elif page == 'amu':
                 m3.metric("Max AMU",       f"{st.session_state.shared_amu['AMU'].max():.2f}")
                 st.dataframe(st.session_state.shared_amu, use_container_width=True)
                 st.download_button(
-                    "â¬‡ï¸ Download AMU Table",
+                    "⬇️ Download AMU Table",
                     data      = st.session_state.shared_amu.to_csv(index=False),
                     file_name = "amu_table.csv",
                     mime      = "text/csv",
@@ -1329,16 +1329,16 @@ elif page == 'amu':
             else:
                 st.warning("Process data in the Upload page first.")
 
-    with st.expander("ðŸ“– Guide / Ø¯Ù„ÙŠÙ„"):
+    with st.expander("📖 Guide / دليل"):
         st.markdown("""
-        **AMU = Total Quantity Used Ã· Number of Months in Window**
+        **AMU = Total Quantity Used ÷ Number of Months in Window**
 
-        - **Raw Data** â€” your transactions as loaded
-        - **Consolidation** â€” grouped by item with totals
-        - **Final AMU** â€” monthly burn rate per item
+        - **Raw Data** — your transactions as loaded
+        - **Consolidation** — grouped by item with totals
+        - **Final AMU** — monthly burn rate per item
 
         ---
-        **Ù…ØªÙˆØ³Ø· Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø´Ù‡Ø±ÙŠ = Ø¥Ø¬Ù…Ø§Ù„ÙŠ Ø§Ù„ÙƒÙ…ÙŠØ© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…Ø© Ã· Ø¹Ø¯Ø¯ Ø§Ù„Ø£Ø´Ù‡Ø±**
+        **متوسط الاستخدام الشهري = إجمالي الكمية المستخدمة ÷ عدد الأشهر**
         """)
 
 
@@ -1349,9 +1349,9 @@ elif page == 'forecast':
     page_header("Inventory Forecast", "Predicted depletion dates based on AMU")
 
     if st.session_state.shared_amu is None:
-        st.warning("âš ï¸ Process AMU data first â€” go to the Upload page.")
+        st.warning("⚠️ Process AMU data first — go to the Upload page.")
     elif st.session_state.stock_df is None:
-        st.warning("âš ï¸ Upload inventory data first â€” go to the Upload page.")
+        st.warning("⚠️ Upload inventory data first — go to the Upload page.")
     else:
         if st.session_state.merged_data is None:
             df_a = st.session_state.shared_amu.copy()
@@ -1384,23 +1384,23 @@ elif page == 'forecast':
         with t_forecast:
             st.dataframe(merged[['Item', 'Master', 'AMU', 'TargetDate']], use_container_width=True)
             st.download_button(
-                "â¬‡ï¸ Download Forecast",
+                "⬇️ Download Forecast",
                 data      = merged[['Item', 'Master', 'AMU', 'TargetDate']].to_csv(index=False),
                 file_name = "depletion_forecast.csv",
                 mime      = "text/csv",
                 key       = "dl_forecast",
             )
 
-    with st.expander("ðŸ“– Guide / Ø¯Ù„ÙŠÙ„"):
+    with st.expander("📖 Guide / دليل"):
         st.markdown("""
-        **Months Remaining = Master Stock Ã· AMU (rounded up)**
+        **Months Remaining = Master Stock ÷ AMU (rounded up)**
 
-        Items missing from Match Check have a name mismatch â€” go to the Adjust page.
+        Items missing from Match Check have a name mismatch — go to the Adjust page.
 
         ---
-        **Ø§Ù„Ø£Ø´Ù‡Ø± Ø§Ù„Ù…ØªØ¨Ù‚ÙŠØ© = Ø§Ù„Ù…Ø®Ø²ÙˆÙ† Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠ Ã· Ù…ØªÙˆØ³Ø· Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø´Ù‡Ø±ÙŠ (Ù…Ù‚Ø±Ø¨ Ù„Ù„Ø£Ø¹Ù„Ù‰)**
+        **الأشهر المتبقية = المخزون الرئيسي ÷ متوسط الاستخدام الشهري (مقرب للأعلى)**
 
-        Ø§Ù„Ø£ØµÙ†Ø§Ù Ø§Ù„Ù…ÙÙ‚ÙˆØ¯Ø© Ù…Ù† ÙØ­Øµ Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚Ø© Ù„Ù‡Ø§ ØªØ¨Ø§ÙŠÙ† ÙÙŠ Ø§Ù„Ø§Ø³Ù… â€” Ø§Ù†ØªÙ‚Ù„ Ø¥Ù„Ù‰ ØµÙØ­Ø© Ø§Ù„Ø¶Ø¨Ø·.
+        الأصناف المفقودة من فحص المطابقة لها تباين في الاسم — انتقل إلى صفحة الضبط.
         """)
 
 
@@ -1411,19 +1411,19 @@ elif page == 'shopping':
     page_header("Shopping List", "3-month rolling purchase plan")
 
     if st.session_state.merged_data is None:
-        st.warning("âš ï¸ Complete the Forecast page first.")
+        st.warning("⚠️ Complete the Forecast page first.")
     else:
         merged    = st.session_state.merged_data
         all_types = sorted(merged['Type'].unique().astype(str).tolist())
 
         f1, f2, f3, f4 = st.columns([2, 1, 2, 2])
-        with f1: search_query = st.text_input("ðŸ” Search", placeholder="Item name...", label_visibility="collapsed")
+        with f1: search_query = st.text_input("🔍 Search", placeholder="Item name...", label_visibility="collapsed")
         with f2:
             sel_month_str = st.selectbox("Month", MONTH_OPTIONS, label_visibility="collapsed")
             sel_date      = pd.to_datetime(sel_month_str)
         with f3: sel_types   = st.multiselect("Category", all_types, default=all_types, label_visibility="collapsed")
         with f4:
-            price_label = st.selectbox("ðŸ’° Price", list(PRICE_METHODS.keys()), label_visibility="collapsed")
+            price_label = st.selectbox("💰 Price", list(PRICE_METHODS.keys()), label_visibility="collapsed")
 
         price_col         = PRICE_METHODS[price_label]
         all_shopping_rows = []
@@ -1443,7 +1443,7 @@ elif page == 'shopping':
 
             m_df = merged[mask].copy()
 
-            st.markdown(f"#### ðŸ—“ï¸ {target_label}")
+            st.markdown(f"#### 🗓️ {target_label}")
 
             if not m_df.empty:
                 m_df['Qty_AMU']        = np.where(m_df['AMU'] < 1, 1.0, np.ceil(m_df['AMU']))
@@ -1461,11 +1461,11 @@ elif page == 'shopping':
                 mc3.metric("Items",                len(m_df))
 
                 col_rename = {
-                    'Price_Last'    : 'ðŸ’° Last',
-                    'Price_Avg'     : 'ðŸ“Š Avg',
-                    'Price_High'    : 'ðŸ“ˆ High',
-                    'Price_Variance': 'â†•ï¸ Variance',
-                    'Price_Active'  : f'âœ… Active',
+                    'Price_Last'    : '💰 Last',
+                    'Price_Avg'     : '📊 Avg',
+                    'Price_High'    : '📈 High',
+                    'Price_Variance': '↕️ Variance',
+                    'Price_Active'  : f'✅ Active',
                 }
                 st.dataframe(
                     m_df[['Item', 'Type', 'Price_Last', 'Price_Avg', 'Price_High',
@@ -1483,7 +1483,7 @@ elif page == 'shopping':
             ].rename(columns={'Price_Active': f'Price ({price_label})', 'Order_Month': 'Month'})
 
             st.download_button(
-                "â¬‡ï¸ Download Full Shopping List",
+                "⬇️ Download Full Shopping List",
                 data                = export_df.to_csv(index=False),
                 file_name           = "shopping_list.csv",
                 mime                = "text/csv",
@@ -1491,15 +1491,15 @@ elif page == 'shopping':
                 key                 = "dl_shop",
             )
 
-    with st.expander("ðŸ“– Guide / Ø¯Ù„ÙŠÙ„"):
+    with st.expander("📖 Guide / دليل"):
         st.markdown("""
-        - **Qty_AMU** â€” order quantity. 1 for slow-moving items, rounded up otherwise.
-        - **Variance** â€” gap between highest and average price. High = volatile pricing.
+        - **Qty_AMU** — order quantity. 1 for slow-moving items, rounded up otherwise.
+        - **Variance** — gap between highest and average price. High = volatile pricing.
         - Use **Highest** price for management budgets, **Average** for planning.
 
         ---
-        - **Qty_AMU** â€” ÙƒÙ…ÙŠØ© Ø§Ù„Ø·Ù„Ø¨. 1 Ù„Ù„Ø£ØµÙ†Ø§Ù Ø¨Ø·ÙŠØ¦Ø© Ø§Ù„Ø­Ø±ÙƒØ©ØŒ Ù…Ù‚Ø±Ø¨Ø© Ù„Ù„Ø£Ø¹Ù„Ù‰ ÙÙŠ ØºÙŠØ± Ø°Ù„Ùƒ.
-        - **Ø§Ù„ØªØ¨Ø§ÙŠÙ†** â€” Ø§Ù„ÙØ¬ÙˆØ© Ø¨ÙŠÙ† Ø£Ø¹Ù„Ù‰ Ø³Ø¹Ø± ÙˆÙ…ØªÙˆØ³Ø· Ø§Ù„Ø³Ø¹Ø±. Ù…Ø±ØªÙØ¹ = ØªØ³Ø¹ÙŠØ± ØºÙŠØ± Ù…Ø³ØªÙ‚Ø±.
+        - **Qty_AMU** — كمية الطلب. 1 للأصناف بطيئة الحركة، مقربة للأعلى في غير ذلك.
+        - **التباين** — الفجوة بين أعلى سعر ومتوسط السعر. مرتفع = تسعير غير مستقر.
         """)
 
 
@@ -1510,7 +1510,7 @@ elif page == 'adjust':
     page_header("Name Alignment", "Fix item name mismatches between files")
 
     if st.session_state.shared_amu is None or st.session_state.stock_df is None:
-        st.warning("âš ï¸ Upload both files first.")
+        st.warning("⚠️ Upload both files first.")
     else:
         df_a = st.session_state.shared_amu.copy()
         df_s = st.session_state.stock_df.copy()
@@ -1534,24 +1534,24 @@ elif page == 'adjust':
 
             st.dataframe(unmatched[display_cols], use_container_width=True)
             st.download_button(
-                "â¬‡ï¸ Download Mismatch Report",
+                "⬇️ Download Mismatch Report",
                 data      = unmatched[display_cols].to_csv(index=False),
                 file_name = "mismatches.csv",
                 mime      = "text/csv",
                 key       = "dl_mismatch",
             )
         else:
-            st.success("âœ… All inventory items are aligned with usage data.")
+            st.success("✅ All inventory items are aligned with usage data.")
 
-    with st.expander("ðŸ“– Guide / Ø¯Ù„ÙŠÙ„"):
+    with st.expander("📖 Guide / دليل"):
         st.markdown("""
         Items in your Inventory but missing from the Forecast appear here.
         The **Suggested Match** shows the closest name from your Usage data.
         Fix the name in either Excel file and re-upload.
 
         ---
-        Ø§Ù„Ø£ØµÙ†Ø§Ù Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ù…Ø®Ø²ÙˆÙ† ÙˆÙ„ÙƒÙ†Ù‡Ø§ Ù…ÙÙ‚ÙˆØ¯Ø© Ù…Ù† Ø§Ù„ØªÙˆÙ‚Ø¹Ø§Øª ØªØ¸Ù‡Ø± Ù‡Ù†Ø§.
-        ÙŠØ¹Ø±Ø¶ Ø¹Ù…ÙˆØ¯ **Ø§Ù„Ø§Ù‚ØªØ±Ø§Ø­ Ø§Ù„Ù…Ø·Ø§Ø¨Ù‚** Ø£Ù‚Ø±Ø¨ Ø§Ø³Ù… Ù…Ù† Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø§Ø³ØªØ®Ø¯Ø§Ù….
+        الأصناف الموجودة في المخزون ولكنها مفقودة من التوقعات تظهر هنا.
+        يعرض عمود **الاقتراح المطابق** أقرب اسم من بيانات الاستخدام.
         """)
 
 
@@ -1562,14 +1562,14 @@ elif page == 'anomaly':
     page_header("Anomaly Detection", "Flag unusual consumption patterns")
 
     if st.session_state.usage_mapped is None:
-        st.warning("âš ï¸ Upload and process usage data first.")
+        st.warning("⚠️ Upload and process usage data first.")
     elif st.session_state.shared_amu is None:
-        st.warning("âš ï¸ Process AMU data first.")
+        st.warning("⚠️ Process AMU data first.")
     else:
         c1, c2, c3 = st.columns(3)
         with c1: lookback    = st.slider("Lookback (months)", 1, 24, 3)
-        with c2: over_thresh = st.slider("ðŸ”´ Overuse threshold (%)", 5, 100, 20, 5)
-        with c3: under_thresh= st.slider("ðŸ”µ Underuse threshold (%)", 5, 100, 30, 5)
+        with c2: over_thresh = st.slider("🔴 Overuse threshold (%)", 5, 100, 20, 5)
+        with c3: under_thresh= st.slider("🔵 Underuse threshold (%)", 5, 100, 30, 5)
 
         all_types_a = sorted(st.session_state.shared_amu['Type'].unique().astype(str).tolist())
         sel_types_a = st.multiselect("Filter by Category", all_types_a, default=all_types_a, key="an_types")
@@ -1589,17 +1589,17 @@ elif page == 'anomaly':
             st.warning("No data in the selected window.")
         else:
             total = len(anomaly_df)
-            n_inv = (anomaly_df['Flag'] == 'ðŸ”´ Investigate').sum()
-            n_wat = (anomaly_df['Flag'] == 'ðŸŸ¡ Watch').sum()
-            n_und = anomaly_df['Flag'].str.startswith('ðŸ”µ').sum()
-            n_nor = (anomaly_df['Flag'] == 'ðŸŸ¢ Normal').sum()
+            n_inv = (anomaly_df['Flag'] == '🔴 Investigate').sum()
+            n_wat = (anomaly_df['Flag'] == '🟡 Watch').sum()
+            n_und = anomaly_df['Flag'].str.startswith('🔵').sum()
+            n_nor = (anomaly_df['Flag'] == '🟢 Normal').sum()
 
             m1, m2, m3, m4, m5 = st.columns(5)
             m1.metric("Total Items",    total)
-            m2.metric("ðŸ”´ Investigate", n_inv)
-            m3.metric("ðŸŸ¡ Watch",       n_wat)
-            m4.metric("ðŸ”µ Underuse",    n_und)
-            m5.metric("ðŸŸ¢ Normal",      n_nor)
+            m2.metric("🔴 Investigate", n_inv)
+            m3.metric("🟡 Watch",       n_wat)
+            m4.metric("🔵 Underuse",    n_und)
+            m5.metric("🟢 Normal",      n_nor)
 
             st.divider()
 
@@ -1613,61 +1613,61 @@ elif page == 'anomaly':
             }
 
             t_all, t_red, t_yel, t_blu, t_grn = st.tabs([
-                f"All ({total})", f"ðŸ”´ ({n_inv})", f"ðŸŸ¡ ({n_wat})",
-                f"ðŸ”µ ({n_und})", f"ðŸŸ¢ ({n_nor})"
+                f"All ({total})", f"🔴 ({n_inv})", f"🟡 ({n_wat})",
+                f"🔵 ({n_und})", f"🟢 ({n_nor})"
             ])
 
             with t_all:
                 st.dataframe(anomaly_df[dcols].rename(columns=drename), use_container_width=True)
-                st.download_button("â¬‡ï¸ Download Report",
+                st.download_button("⬇️ Download Report",
                     anomaly_df[dcols].rename(columns=drename).to_csv(index=False),
                     "anomaly_report.csv", "text/csv", key="dl_an_all")
 
             with t_red:
-                red = anomaly_df[anomaly_df['Flag'] == 'ðŸ”´ Investigate']
+                red = anomaly_df[anomaly_df['Flag'] == '🔴 Investigate']
                 if red.empty: st.success("None.")
                 else:
-                    st.error(f"{len(red)} item(s) â€” check for leakage or theft.")
+                    st.error(f"{len(red)} item(s) — check for leakage or theft.")
                     st.dataframe(red[dcols].rename(columns=drename), use_container_width=True)
-                    st.download_button("â¬‡ï¸ Download", red[dcols].rename(columns=drename).to_csv(index=False),
+                    st.download_button("⬇️ Download", red[dcols].rename(columns=drename).to_csv(index=False),
                         "investigate.csv", "text/csv", key="dl_an_red")
 
             with t_yel:
-                yel = anomaly_df[anomaly_df['Flag'] == 'ðŸŸ¡ Watch']
+                yel = anomaly_df[anomaly_df['Flag'] == '🟡 Watch']
                 if yel.empty: st.success("None.")
                 else:
-                    st.warning(f"{len(yel)} item(s) slightly over â€” monitor.")
+                    st.warning(f"{len(yel)} item(s) slightly over — monitor.")
                     st.dataframe(yel[dcols].rename(columns=drename), use_container_width=True)
 
             with t_blu:
-                blu = anomaly_df[anomaly_df['Flag'].str.startswith('ðŸ”µ')]
+                blu = anomaly_df[anomaly_df['Flag'].str.startswith('🔵')]
                 if blu.empty: st.success("None.")
                 else:
                     st.info(f"{len(blu)} item(s) under consumed.")
                     st.dataframe(blu[dcols].rename(columns=drename), use_container_width=True)
 
             with t_grn:
-                grn = anomaly_df[anomaly_df['Flag'] == 'ðŸŸ¢ Normal']
+                grn = anomaly_df[anomaly_df['Flag'] == '🟢 Normal']
                 if grn.empty: st.info("None.")
                 else:
                     st.success(f"{len(grn)} item(s) normal.")
                     st.dataframe(grn[dcols].rename(columns=drename), use_container_width=True)
 
-    with st.expander("ðŸ“– Guide / Ø¯Ù„ÙŠÙ„"):
+    with st.expander("📖 Guide / دليل"):
         st.markdown("""
-        - ðŸ”´ **Investigate** â€” 2.5Ã— over threshold. Check for leakage or theft.
-        - ðŸŸ¡ **Watch** â€” Over threshold. Monitor next window.
-        - ðŸ”µ **Underuse** â€” Well below expected. Possible hoarding or missing records.
-        - ðŸŸ¢ **Normal** â€” Within expected range.
-        - âš ï¸ **New Item** â€” No history yet.
+        - 🔴 **Investigate** — 2.5× over threshold. Check for leakage or theft.
+        - 🟡 **Watch** — Over threshold. Monitor next window.
+        - 🔵 **Underuse** — Well below expected. Possible hoarding or missing records.
+        - 🟢 **Normal** — Within expected range.
+        - ⚠️ **New Item** — No history yet.
 
         Start with **3 months / 20% / 30%** and adjust from there.
 
         ---
-        - ðŸ”´ **ØªØ­Ù‚ÙŠÙ‚** â€” Ø£Ø¹Ù„Ù‰ Ø¨Ù€ 2.5 Ù…Ø±Ø© Ù…Ù† Ø§Ù„Ø­Ø¯. ØªØ­Ù‚Ù‚ Ù…Ù† Ø§Ù„ØªØ³Ø±Ø¨ Ø£Ùˆ Ø§Ù„Ø³Ø±Ù‚Ø©.
-        - ðŸŸ¡ **Ù…Ø±Ø§Ù‚Ø¨Ø©** â€” ÙÙˆÙ‚ Ø§Ù„Ø­Ø¯. Ø±Ø§Ù‚Ø¨ ÙÙŠ Ø§Ù„Ù†Ø§ÙØ°Ø© Ø§Ù„ØªØ§Ù„ÙŠØ©.
-        - ðŸ”µ **Ø§Ù†Ø®ÙØ§Ø¶** â€” Ø£Ù‚Ù„ Ø¨ÙƒØ«ÙŠØ± Ù…Ù† Ø§Ù„Ù…ØªÙˆÙ‚Ø¹.
-        - ðŸŸ¢ **Ø·Ø¨ÙŠØ¹ÙŠ** â€” Ø¶Ù…Ù† Ø§Ù„Ù†Ø·Ø§Ù‚.
+        - 🔴 **تحقيق** — أعلى بـ 2.5 مرة من الحد. تحقق من التسرب أو السرقة.
+        - 🟡 **مراقبة** — فوق الحد. راقب في النافذة التالية.
+        - 🔵 **انخفاض** — أقل بكثير من المتوقع.
+        - 🟢 **طبيعي** — ضمن النطاق.
         """)
 
 
@@ -1681,7 +1681,7 @@ elif page == 'ai':
     <div style="background:rgba(46,124,246,0.06);border:1px solid rgba(46,124,246,0.15);
                 border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem">
         <p style="margin:0;color:#6b7c99;font-size:0.85rem;font-family:'DM Sans',sans-serif">
-            ðŸ¤– Ask anything about your inventory â€” depletion dates, top consuming items,
+            🤖 Ask anything about your inventory — depletion dates, top consuming items,
             anomalies, budget estimates, or what to order next month.
             Responds in English or Arabic based on your question.
         </p>
@@ -1708,20 +1708,20 @@ elif page == 'ai':
         st.session_state.ai_history.append({"user": user_q, "ai": ai_resp})
 
     if st.session_state.ai_history:
-        if st.button("ðŸ—‘ï¸ Clear conversation", key="clear_ai"):
+        if st.button("🗑️ Clear conversation", key="clear_ai"):
             st.session_state.ai_history = []
             st.rerun()
 
     st.divider()
     st.markdown("""
-    **Example questions / Ø£Ù…Ø«Ù„Ø© Ø¹Ù„Ù‰ Ø§Ù„Ø£Ø³Ø¦Ù„Ø©:**
+    **Example questions / أمثلة على الأسئلة:**
     """)
     examples = [
         "Which items are running out soonest?",
         "What should I order next month?",
         "Which category has the highest consumption?",
-        "Ù…Ø§ Ù‡ÙŠ Ø§Ù„Ø£ØµÙ†Ø§Ù Ø§Ù„ØªÙŠ Ø³ØªÙ†ÙØ¯ Ù‚Ø±ÙŠØ¨Ø§Ù‹ØŸ",
-        "Ù…Ø§ Ù‡Ùˆ Ù…ØªÙˆØ³Ø· Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù‚ÙØ§Ø²Ø§Øª Ø´Ù‡Ø±ÙŠØ§Ù‹ØŸ",
+        "ما هي الأصناف التي ستنفد قريباً؟",
+        "ما هو متوسط استخدام القفازات شهرياً؟",
     ]
     cols = st.columns(len(examples))
     for i, ex in enumerate(examples):
@@ -1744,7 +1744,7 @@ if page != 'ai':
     st.markdown("""
     <div class="ai-bubble">
         <a href="?page=ai" style="text-decoration:none">
-            <div class="ai-bubble-btn" title="Open AI Assistant">ðŸ¤–</div>
+            <div class="ai-bubble-btn" title="Open AI Assistant">🤖</div>
         </a>
     </div>
     """, unsafe_allow_html=True)
@@ -1753,7 +1753,7 @@ if page != 'ai':
     if st.session_state.get('ai_open', False):
         with st.sidebar:
             st.divider()
-            st.markdown("### ðŸ¤– Quick AI Chat")
+            st.markdown("### 🤖 Quick AI Chat")
             quick_q = st.text_input("Ask a question", key="bubble_q")
             if st.button("Ask", key="bubble_ask") and quick_q:
                 resp = ask_ai(quick_q, [])
