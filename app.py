@@ -804,7 +804,7 @@ Respond in the same language as the user (English or Arabic).
                 "Authorization" : f"Bearer {api_key}",
             },
             json={
-                "model"      : "deepseek-r1-distill-llama-70b",
+                "model"      : "llama-3.3-70b-versatile",
                 "messages"   : messages,
                 "max_tokens" : 2000,
             },
