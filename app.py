@@ -691,13 +691,23 @@ def run_fuzzy_match(unmatched_items, usage_names_tuple):
 # ANOMALY DETECTION
 # =============================================================
 def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_tuple):
-    # Parse usage data
-    df            = pd.read_json(io.StringIO(usage_json))
-    df['Created'] = pd.to_datetime(df['Created'], errors='coerce')
-    df['Amount']  = pd.to_numeric(df['Amount'],   errors='coerce').fillna(0)
-    df            = df.dropna(subset=['Created'])
+    # Parse usage data — use unit='ms' to handle JSON timestamp format
+    df = pd.read_json(io.StringIO(usage_json))
 
-    # Parse AMU data and filter by selected types
+    # Fix date parsing: JSON stores dates as ms timestamps
+    if pd.api.types.is_numeric_dtype(df['Created']):
+        df['Created'] = pd.to_datetime(df['Created'], unit='ms', errors='coerce')
+    else:
+        df['Created'] = pd.to_datetime(df['Created'], errors='coerce')
+
+    df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce').fillna(0)
+    df = df.dropna(subset=['Created'])
+
+    # Debug: show date range in the data
+    if df.empty:
+        return pd.DataFrame()
+
+    # Parse AMU and filter by selected types
     amu = pd.read_json(io.StringIO(amu_json))
     if types_tuple:
         amu = amu[amu['Type'].isin(list(types_tuple))]
@@ -705,11 +715,11 @@ def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_t
     if amu.empty:
         return pd.DataFrame()
 
-    # Filter usage to lookback window
+    # Compute cutoff and filter
     cutoff = pd.Timestamp.now() - pd.DateOffset(months=lookback)
     window = df[df['Created'] >= cutoff]
 
-    # Always compute actual usage — items with zero usage in window get 0
+    # Compute actual usage in window
     if not window.empty:
         actual = window.groupby(['Item', 'Type']).agg(
             Actual_Usage=('Amount', 'sum')
@@ -717,12 +727,13 @@ def calculate_anomalies(usage_json, amu_json, lookback, over_t, under_t, types_t
     else:
         actual = pd.DataFrame(columns=['Item', 'Type', 'Actual_Usage'])
 
-    # Build reference from AMU (all items regardless of recent activity)
+    # Reference from AMU — all items always included
     ref = amu[['Item', 'Type', 'AMU']].copy()
+    ref['AMU'] = pd.to_numeric(ref['AMU'], errors='coerce').fillna(0)
     ref['Expected_Usage'] = (ref['AMU'] * lookback).round(2)
 
-    # Left join — items with no recent usage get Actual_Usage = 0
-    r                 = pd.merge(ref, actual, on=['Item', 'Type'], how='left')
+    # Left join so items with no recent usage show Actual = 0
+    r = pd.merge(ref, actual, on=['Item', 'Type'], how='left')
     r['Actual_Usage'] = pd.to_numeric(r['Actual_Usage'], errors='coerce').fillna(0)
     r['Variance']     = (r['Actual_Usage'] - r['Expected_Usage']).round(2)
 
@@ -1444,6 +1455,17 @@ elif page == 'anomaly':
         sel_types_a = st.multiselect("Filter by Category", all_types_a, default=all_types_a, key="an_types")
 
         st.divider()
+
+        # Show date range info to help confirm correct window
+        usage_df_check = st.session_state.usage_mapped.copy()
+        usage_df_check['Created'] = pd.to_datetime(usage_df_check['Created'], errors='coerce')
+        usage_df_check = usage_df_check.dropna(subset=['Created'])
+        if not usage_df_check.empty:
+            min_date     = usage_df_check['Created'].min().strftime('%Y-%m-%d')
+            max_date     = usage_df_check['Created'].max().strftime('%Y-%m-%d')
+            cutoff_date  = (pd.Timestamp.now() - pd.DateOffset(months=lookback)).strftime('%Y-%m-%d')
+            in_window    = usage_df_check[usage_df_check['Created'] >= pd.Timestamp.now() - pd.DateOffset(months=lookback)]
+            st.info(f"📅 Data range: **{min_date}** → **{max_date}** | Cutoff: **{cutoff_date}** | Rows in window: **{len(in_window):,}**")
 
         anomaly_df = calculate_anomalies(
             usage_json  = st.session_state.usage_mapped.to_json(),
